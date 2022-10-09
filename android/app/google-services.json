@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "72334226994",
+    "project_id": "iftar-project-8192d",
+    "storage_bucket": "iftar-project-8192d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:72334226994:android:5dbe7ab3ea28bfdbc52e2b",
+        "android_client_info": {
+          "package_name": "com.izdiad.iftar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "72334226994-ripobgn76m33j5o91uou60i4h016sp08.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCeNG0D3n1ufFxHgMhi2774zq1ahmSaxM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "72334226994-ripobgn76m33j5o91uou60i4h016sp08.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
