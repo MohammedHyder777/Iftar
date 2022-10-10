@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:iftar/services/database.dart';
 import 'package:iftar/user.dart';
@@ -70,5 +71,15 @@ class AuthService {
       print(e.toString());
       return null;
     }
+  }
+
+  /// Delete User account from fbauth and his data from fbfirestore
+  void deleteUserData() async {
+    // Delete user auth from firebase auth:
+    _firebaseAuth.currentUser!.delete();
+
+    // Delete data from firestore
+    String uid = _firebaseAuth.currentUser!.uid;
+    await FirebaseFirestore.instance.collection('cpath').doc(uid).delete();
   }
 }
