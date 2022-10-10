@@ -9,7 +9,7 @@ class AuthService {
     return fbuser != null ? IUser(fbuser.uid, fbuser.email) : null;
   }
 
-  /// change user stream
+  /// user state changes stream
   Stream<IUser?> get user {
     return _firebaseAuth
         .authStateChanges()

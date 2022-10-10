@@ -22,11 +22,29 @@ class MyApp extends StatelessWidget {
       value: AuthService().user,
       initialData: null,
       child: MaterialApp(
-        home: const Wrapper(),
-        theme: ThemeData(
-          primarySwatch: Colors.indigo
-        ),
-      ),
-    );
+          home: const Wrapper(),
+          theme: ThemeData(
+            primarySwatch: Colors.indigo,
+
+            outlinedButtonTheme: OutlinedButtonThemeData(
+              style: ButtonStyle(
+                padding: MaterialStateProperty.all(const EdgeInsets.all(11)),
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                ),
+              ),
+          ),
+
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ButtonStyle(
+                padding: MaterialStateProperty.all(const EdgeInsets.all(11)),
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                ),
+              ),
+          )),
+    ));
   }
 }

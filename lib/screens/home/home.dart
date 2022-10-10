@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:iftar/data.dart';
 import 'package:iftar/screens/home/data_list.dart';
@@ -7,14 +6,18 @@ import 'package:iftar/services/auth.dart';
 import 'package:iftar/services/database.dart';
 import 'package:iftar/user.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
-class Home extends StatelessWidget {
-  Home({Key? key}) : super(key: key);
+class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
 
+  @override
+  State<Home> createState() => _HomeState();
+}
 
+class _HomeState extends State<Home> {
   final AuthService _authService = AuthService();
-  
-
+  String currentCriteria = 'food';
   @override
   Widget build(BuildContext context) {
     final IUser? user = Provider.of<IUser?>(context);
@@ -30,6 +33,7 @@ class Home extends StatelessWidget {
         },
       );
     }
+
     return StreamProvider<List<Data>>.value(
       initialData: const [],
       value: DatabaseService().document,
@@ -44,15 +48,15 @@ class Home extends StatelessWidget {
           elevation: 7,
           title: Text.rich(
             TextSpan(
-              text: 'الصفحة  الرئيسية',
-              style: const TextStyle(fontSize: 23,),
-              children: [
-                TextSpan(
-                  text: '\n${user!.email}\n',
-                  style: const TextStyle(fontSize: 10)
-                )
-              ]
-            ),
+                text: 'الصفحة  الرئيسية',
+                style: const TextStyle(
+                  fontSize: 23,
+                ),
+                children: [
+                  TextSpan(
+                      text: '\n${user!.email}\n',
+                      style: const TextStyle(fontSize: 10))
+                ]),
             textDirection: TextDirection.rtl,
             textAlign: TextAlign.center,
           ),
@@ -60,7 +64,7 @@ class Home extends StatelessWidget {
             TextButton.icon(
               onPressed: () async {
                 await _authService.signOut();
-              }, 
+              },
               icon: const Icon(
                 Icons.person_off_outlined,
                 color: Colors.white,
@@ -82,20 +86,62 @@ class Home extends StatelessWidget {
                 'ضبط',
                 style: TextStyle(color: Colors.white, fontSize: 14),
               ),
-              
             )
           ],
         ),
         body: Container(
           decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/logo.jpg'),
-              fit: BoxFit.contain,
-              opacity: 0.5
-            )
+              image: DecorationImage(
+                  image: AssetImage('assets/logo.jpg'),
+                  fit: BoxFit.contain,
+                  opacity: 0.5)),
+          child: DataList(
+            sortCriteria: currentCriteria,
           ),
-          child: const DataList(),
         ),
+        floatingActionButton: SpeedDial(
+          spaceBetweenChildren: 14,
+          spacing: 14,
+          direction: SpeedDialDirection.up,
+          activeIcon: Icons.close,
+          buttonSize: const Size(70, 70),
+          childrenButtonSize: const Size(65, 65),
+          children: [
+            SpeedDialChild(
+              shape: const StadiumBorder(),
+              backgroundColor: currentCriteria == 'name'
+                  ? const Color.fromARGB(209, 5, 23, 122)
+                  : const Color.fromARGB(209, 5, 122, 107),
+              child: const Text('بالاسم', style: TextStyle(color: Colors.white),),
+              onTap: () {setState(() => currentCriteria = 'name');},
+            ),
+            SpeedDialChild(
+              shape: const StadiumBorder(),
+              backgroundColor: currentCriteria == 'food'
+                  ? const Color.fromARGB(209, 5, 23, 122)
+                  : const Color.fromARGB(209, 5, 122, 107),
+              child: const Text('بالوجبة', style: TextStyle(color: Colors.white),),
+              onTap: () {setState(() => currentCriteria = 'food');},
+            ),
+            SpeedDialChild(
+              shape: const StadiumBorder(),
+              backgroundColor: currentCriteria == 'strength'
+                  ? const Color.fromARGB(209, 5, 23, 122)
+                  : const Color.fromARGB(209, 5, 122, 107),
+              child: const Text('بالرغبة', style: TextStyle(color: Colors.white),),
+              onTap: () {setState(() => currentCriteria = 'strength');},
+            ),
+          ],
+          child: const Text('رتب'),
+        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () {
+        //     setState(() {
+        //       currentCriteria = currentCriteria == 'food' ? 'name' : 'food';
+        //     });
+        //   },
+        //   child: const Text('رتب'),
+        // ),
       ),
     );
   }
