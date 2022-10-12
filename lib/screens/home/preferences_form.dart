@@ -18,16 +18,19 @@ class _PreferencesFormState extends State<PreferencesForm> {
   /// Delete account confirmation messege
   void viewDeleteConfirm() {
     showDialog(
+      barrierColor: const Color.fromARGB(171, 230, 118, 118),
       context: context,
       builder: (context) => AlertDialog(
           icon: const Icon(
-            Icons.warning_outlined,
+            Icons.warning_rounded,
             color: Colors.red,
-            size: 30,
+            size: 70,
           ),
           content: const Text(
             'أتدرك أنك بالموافقة ستفقد حسابك وجميع بياناتك؟',
             textDirection: TextDirection.rtl,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 20),
           ),
           actionsAlignment: MainAxisAlignment.spaceEvenly,
           actions: [
@@ -35,6 +38,11 @@ class _PreferencesFormState extends State<PreferencesForm> {
               onPressed: () => Navigator.pop(context),
               icon: const Icon(Icons.close),
               label: const Text('إلغاء'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.indigo),
+                foregroundColor: MaterialStateProperty.all(Colors.white),
+                padding:  MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 11, vertical: 8)),
+              ),
             ),
             ElevatedButton.icon(
               onPressed: () {
@@ -44,6 +52,11 @@ class _PreferencesFormState extends State<PreferencesForm> {
               },
               icon: const Icon(Icons.delete_forever),
               label: const Text('تأكيد'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.red),
+                foregroundColor: MaterialStateProperty.all(Colors.white),
+                padding:  MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 11, vertical: 8)),
+              ),
             ),
           ]),
     );

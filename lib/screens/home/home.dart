@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iftar/data.dart';
+import 'package:iftar/screens/home/statistics_card.dart';
 import 'package:iftar/screens/home/data_list.dart';
 import 'package:iftar/screens/home/preferences_form.dart';
 import 'package:iftar/services/auth.dart';
@@ -18,26 +19,40 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final AuthService _authService = AuthService();
   String currentCriteria = 'food';
+
+  int countFoodOrders(String type, BuildContext mycontext) {
+    final data = Provider.of<List<Data>>(mycontext);
+    int count = 0;
+    for (var user in data) {
+      if (user.food == type) {
+        count++;
+      }
+    }
+    return count;
+  }
+
   @override
   Widget build(BuildContext context) {
     final IUser? user = Provider.of<IUser?>(context);
 
-    void _showPreferences() {
+    /// Show Preferences //////////////////////////////////
+    void showPreferences() {
       showModalBottomSheet(
         context: context,
         builder: (context) {
           return Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: PreferencesForm(),
+            child: const PreferencesForm(),
           );
         },
       );
     }
 
+    ////////////////////////////////////////////////////////
     return StreamProvider<List<Data>>.value(
       initialData: const [],
       value: DatabaseService().document,
-      child: Scaffold(
+      builder: (context, child) => Scaffold(
         backgroundColor: Colors.blueGrey[200],
         appBar: AppBar(
           // backgroundColor: Colors.blue,
@@ -76,7 +91,7 @@ class _HomeState extends State<Home> {
               ),
             ),
             TextButton.icon(
-              onPressed: () => _showPreferences(),
+              onPressed: () => showPreferences(),
               icon: const Icon(
                 Icons.settings,
                 color: Colors.white,
@@ -112,36 +127,53 @@ class _HomeState extends State<Home> {
               backgroundColor: currentCriteria == 'name'
                   ? const Color.fromARGB(209, 5, 23, 122)
                   : const Color.fromARGB(209, 5, 122, 107),
-              child: const Text('بالاسم', style: TextStyle(color: Colors.white),),
-              onTap: () {setState(() => currentCriteria = 'name');},
+              child: const Text(
+                'بالاسم',
+                style: TextStyle(color: Colors.white),
+              ),
+              onTap: () {
+                setState(() => currentCriteria = 'name');
+              },
             ),
             SpeedDialChild(
               shape: const StadiumBorder(),
               backgroundColor: currentCriteria == 'food'
                   ? const Color.fromARGB(209, 5, 23, 122)
                   : const Color.fromARGB(209, 5, 122, 107),
-              child: const Text('بالوجبة', style: TextStyle(color: Colors.white),),
-              onTap: () {setState(() => currentCriteria = 'food');},
+              child: const Text(
+                'بالوجبة',
+                style: TextStyle(color: Colors.white),
+              ),
+              onTap: () {
+                setState(() => currentCriteria = 'food');
+              },
             ),
             SpeedDialChild(
               shape: const StadiumBorder(),
               backgroundColor: currentCriteria == 'strength'
                   ? const Color.fromARGB(209, 5, 23, 122)
                   : const Color.fromARGB(209, 5, 122, 107),
-              child: const Text('بالرغبة', style: TextStyle(color: Colors.white),),
-              onTap: () {setState(() => currentCriteria = 'strength');},
+              child: const Text(
+                'بالرغبة',
+                style: TextStyle(color: Colors.white),
+              ),
+              onTap: () {
+                setState(() => currentCriteria = 'strength');
+              },
             ),
           ],
           child: const Text('رتب'),
         ),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () {
-        //     setState(() {
-        //       currentCriteria = currentCriteria == 'food' ? 'name' : 'food';
-        //     });
-        //   },
-        //   child: const Text('رتب'),
-        // ),
+        // Statistics:
+        extendBody: false,
+        bottomNavigationBar: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            StatisticsCard(count: '${countFoodOrders('لن أفطر معكم', context)}', type: 'لن أفطر معكم',),
+            StatisticsCard(count: '${countFoodOrders('غير الفول', context)}', type: 'غير الفول',),
+            StatisticsCard(count: '${countFoodOrders('فول', context)}', type: 'الفول',)
+          ],
+        ),
       ),
     );
   }
