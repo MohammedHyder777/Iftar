@@ -20,6 +20,7 @@ class _SignUpState extends State<SignUp> {
 
   String email = '';
   String password = '';
+   String name = '';
   String error = '';
 
   bool signing = false;
@@ -73,6 +74,16 @@ class _SignUpState extends State<SignUp> {
                     });
                   },
                 ),
+                const SizedBox(height: 20,),
+                TextFormField(
+                  decoration: fieldDecor(label: 'الاسم'),
+                  validator: (value) => value!.isEmpty ? 'أدخل اسمك' : null,
+                  onChanged: (value) {
+                    setState(() {
+                      name = value;
+                    });
+                  },
+                ),
                 (error.isEmpty)? const SizedBox(height: 0,) : const SizedBox(height: 20,),
                 (error.isEmpty)? const SizedBox(height: 0,) : Text(
                   error,
@@ -84,7 +95,7 @@ class _SignUpState extends State<SignUp> {
                       if (_formKey.currentState!.validate()){
                         setState(() => signing = true);
                         try{
-                        dynamic result = await _authService.signUpWithEmail(email, password);
+                                await _authService.signUpWithEmail(name, email, password);
                         } on FirebaseAuthException catch (e) {
                           print('*************\n${e.code}\n***********');
                           String specialError = '';

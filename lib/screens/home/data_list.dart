@@ -49,7 +49,7 @@ void sortBy(List<Data> unsorted, String criteria) {
   if (criteria == 'name') {
     // unsorted.sortBy((a, b) => a.name.compareTo(b.name));
     // To reverse the sorting (from arabic ي to english a):
-    unsorted.sort((a, b) => b.name.compareTo(a.name));
+    unsorted.sort((a, b) => a.name.compareTo(b.name));
   }
   if (criteria == 'food') {
     unsorted.sort((a, b) => a.food.compareTo(b.food));

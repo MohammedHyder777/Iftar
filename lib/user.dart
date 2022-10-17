@@ -2,7 +2,9 @@ class IUser{
 
   final String uid;
   String? email;
-  IUser(this.uid, this.email);
+  String name;
+  
+  IUser(this.uid, this.email, this.name);
 }
 
 
