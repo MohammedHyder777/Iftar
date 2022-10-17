@@ -49,6 +49,70 @@ class _HomeState extends State<Home> {
     }
 
     ////////////////////////////////////////////////////////
+
+    /// Delete account confirmation messege
+    void viewDeleteConfirm() {
+      showDialog(
+        barrierColor: const Color.fromARGB(171, 230, 118, 118),
+        context: context,
+        builder: (context) => AlertDialog(
+            icon: const Icon(
+              Icons.warning_rounded,
+              color: Colors.red,
+              size: 70,
+            ),
+            content: const Text(
+              'أتدرك أنك بالموافقة ستفقد حسابك وجميع بياناتك؟',
+              textDirection: TextDirection.rtl,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 20),
+            ),
+            actionsAlignment: MainAxisAlignment.spaceEvenly,
+            actions: [
+              ElevatedButton.icon(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.close),
+                label: const Text('إلغاء'),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.indigo),
+                  foregroundColor: MaterialStateProperty.all(Colors.white),
+                  padding: MaterialStateProperty.all(
+                      const EdgeInsets.symmetric(horizontal: 11, vertical: 8)),
+                ),
+              ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  _authService.deleteUserAccount();
+                  _authService.signOut();
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Icons.delete_forever),
+                label: const Text('تأكيد'),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.red),
+                  foregroundColor: MaterialStateProperty.all(Colors.white),
+                  padding: MaterialStateProperty.all(
+                      const EdgeInsets.symmetric(horizontal: 11, vertical: 8)),
+                ),
+              ),
+            ]),
+      );
+    }
+    ////////////////////////////////////////////////////////////////////////////
+
+    /// create PDF :
+    void createPdfReport() {
+      showDialog(context: context, builder: (context) => const AlertDialog(
+        icon: Icon(Icons.insert_drive_file, size: 30, color: Colors.indigo,),
+        content: Text(
+              'قريبا ... إن شاء الله',
+              textDirection: TextDirection.rtl,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 20, color: Colors.indigo,),
+            ),
+      ),);
+    }
+
     return StreamProvider<List<Data>>.value(
       initialData: const [],
       value: DatabaseService().document,
@@ -76,32 +140,86 @@ class _HomeState extends State<Home> {
             textAlign: TextAlign.center,
           ),
           actions: [
-            TextButton.icon(
-              onPressed: () async {
-                await _authService.signOut();
+            DropdownButton(
+              underline: const SizedBox(
+                height: 0,
+              ),
+              hint: Row(
+                children: const [
+                  Icon(
+                    Icons.settings,
+                    size: 22,
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Text('خيارات',
+                      style: TextStyle(color: Colors.white, fontSize: 16)),
+                ],
+              ),
+              alignment: AlignmentDirectional.bottomEnd,
+              items: [
+                DropdownMenuItem(
+                  value: '1',
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(Icons.tune, color: Colors.indigo[800]),
+                      Text('عدل الطلب',
+                          style: TextStyle(color: Colors.indigo[800])),
+                    ],
+                  ),
+                ),
+                DropdownMenuItem(
+                  value: '2',
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(Icons.person_off_outlined,
+                          color: Colors.indigo[800]),
+                      Text('أشعر بالخروج',
+                          style: TextStyle(color: Colors.indigo[800])),
+                    ],
+                  ),
+                ),
+                DropdownMenuItem(
+                  value: '3',
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(Icons.print_rounded, color: Colors.indigo[800]),
+                      Text('اطبع تقريرا',
+                          style: TextStyle(color: Colors.indigo[800])),
+                    ],
+                  ),
+                ),
+                DropdownMenuItem(
+                  value: '4',
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(Icons.delete_forever, color: Colors.red[800]),
+                      Text('احذف الحساب',
+                          style: TextStyle(color: Colors.indigo[800])),
+                    ],
+                  ),
+                ),
+              ],
+              onChanged: (val) {
+                if (val == '1') {
+                  showPreferences();
+                }
+                if (val == '2') {
+                  _authService.signOut();
+                }
+                if (val == '3') {
+                  createPdfReport();
+                }
+                if (val == '4') {
+                  viewDeleteConfirm();
+                }
               },
-              icon: const Icon(
-                Icons.person_off_outlined,
-                color: Colors.white,
-                size: 22,
-              ),
-              label: const Text(
-                'خروج',
-                style: TextStyle(color: Colors.white, fontSize: 14),
-              ),
             ),
-            TextButton.icon(
-              onPressed: () => showPreferences(),
-              icon: const Icon(
-                Icons.settings,
-                color: Colors.white,
-                size: 22,
-              ),
-              label: const Text(
-                'ضبط',
-                style: TextStyle(color: Colors.white, fontSize: 14),
-              ),
-            )
           ],
         ),
         body: Container(
@@ -169,9 +287,18 @@ class _HomeState extends State<Home> {
         bottomNavigationBar: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            StatisticsCard(count: '${countFoodOrders('لن أفطر معكم', context)}', type: 'لن أفطر معكم',),
-            StatisticsCard(count: '${countFoodOrders('غير الفول', context)}', type: 'غير الفول',),
-            StatisticsCard(count: '${countFoodOrders('فول', context)}', type: 'الفول',)
+            StatisticsCard(
+              count: '${countFoodOrders('لن أفطر معكم', context)}',
+              type: 'لن أفطر معكم',
+            ),
+            StatisticsCard(
+              count: '${countFoodOrders('غير الفول', context)}',
+              type: 'غير الفول',
+            ),
+            StatisticsCard(
+              count: '${countFoodOrders('فول', context)}',
+              type: 'الفول',
+            )
           ],
         ),
       ),

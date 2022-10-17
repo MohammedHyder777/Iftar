@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:iftar/resources/resources.dart';
-import 'package:iftar/services/auth.dart';
 import 'package:iftar/services/database.dart';
 import 'package:iftar/user.dart';
 import 'package:provider/provider.dart';
@@ -13,54 +12,6 @@ class PreferencesForm extends StatefulWidget {
 }
 
 class _PreferencesFormState extends State<PreferencesForm> {
-  AuthService as = AuthService();
-
-  /// Delete account confirmation messege
-  void viewDeleteConfirm() {
-    showDialog(
-      barrierColor: const Color.fromARGB(171, 230, 118, 118),
-      context: context,
-      builder: (context) => AlertDialog(
-          icon: const Icon(
-            Icons.warning_rounded,
-            color: Colors.red,
-            size: 70,
-          ),
-          content: const Text(
-            'أتدرك أنك بالموافقة ستفقد حسابك وجميع بياناتك؟',
-            textDirection: TextDirection.rtl,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 20),
-          ),
-          actionsAlignment: MainAxisAlignment.spaceEvenly,
-          actions: [
-            ElevatedButton.icon(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.close),
-              label: const Text('إلغاء'),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.indigo),
-                foregroundColor: MaterialStateProperty.all(Colors.white),
-                padding:  MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 11, vertical: 8)),
-              ),
-            ),
-            ElevatedButton.icon(
-              onPressed: () {
-                as.deleteUserAccount();
-                as.signOut();
-                Navigator.pop(context);
-              },
-              icon: const Icon(Icons.delete_forever),
-              label: const Text('تأكيد'),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.red),
-                foregroundColor: MaterialStateProperty.all(Colors.white),
-                padding:  MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 11, vertical: 8)),
-              ),
-            ),
-          ]),
-    );
-  }
 
   final _formKey = GlobalKey<FormState>();
   List<String> food = ['فول', 'غير الفول', 'لن أفطر معكم'];
@@ -173,28 +124,6 @@ class _PreferencesFormState extends State<PreferencesForm> {
                               style: TextStyle(color: Colors.blue),
                             ),
                           ),
-                          ////// Delete Section: //////////////////////////////////
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          const Text(
-                            'حذف الحساب',
-                            style: TextStyle(
-                              fontSize: 19,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red,
-                            ),
-                          ),
-                          TextButton.icon(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                viewDeleteConfirm();
-                              },
-                              icon: const Icon(
-                                Icons.delete_forever_rounded,
-                                color: Colors.red,
-                              ),
-                              label: const Text(''))
                         ],
                       ),
                     ));
