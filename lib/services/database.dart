@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:iftar/data.dart';
 import 'package:iftar/user.dart';
 
@@ -48,7 +47,7 @@ class DatabaseService {
       .collection('orders');
 
   /// create or update a document for a certain uid
-  Future updateUserData(String food, String name, int strength) async {
+  Future updateUserOrderData(String food, String name, int strength) async {
     await usersAuthCollection.doc(uid).set({'name': name}, SetOptions(merge: true));
     await collection
         .doc(uid)

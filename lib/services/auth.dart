@@ -5,6 +5,7 @@ import 'package:iftar/user.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
   /// Create custom user object IUser:
   IUser? _userFromFBUser(User? fbuser, String name) {
     return fbuser != null ? IUser(fbuser.uid, fbuser.email, name) : null;
@@ -12,7 +13,6 @@ class AuthService {
 
   /// user state changes stream
   Stream<IUser?> get user {
-    
     return _firebaseAuth
         .authStateChanges()
         .map((user) => _userFromFBUser(user, 'fullName'));
@@ -44,10 +44,10 @@ class AuthService {
       if (await DatabaseService().hasData(user.uid)) {
       } else {
         await DatabaseService(user.uid)
-            .updateUserData('لن أفطر معكم', fullName, 500);
+            .updateUserOrderData('لن أفطر معكم', fullName, 500);
       }
       //////////////////////////////
-      
+
       return _userFromFBUser(user, fullName);
     } on FirebaseAuthException catch (error) {
       throw FirebaseAuthException(code: error.code);
@@ -65,10 +65,9 @@ class AuthService {
       User? fbuser = result.user;
       // Create a document for the new user
       await DatabaseService(fbuser!.uid)
-          .updateUserData('لن أفطر معكم', name, 500);
+          .updateUserOrderData('لن أفطر معكم', name, 500);
       // Add the user to the users_auth_collection
-      DatabaseService(fbuser.uid)
-          .addUserToDB(_userFromFBUser(fbuser, name)!);
+      DatabaseService(fbuser.uid).addUserToDB(_userFromFBUser(fbuser, name)!);
 
       return _userFromFBUser(fbuser, name);
     } on FirebaseAuthException catch (error) {
@@ -90,12 +89,14 @@ class AuthService {
   }
 
   /// Delete User account from fbauth and his data from fbfirestore
-  void deleteUserData() async {
-    // Delete user auth from firebase auth:
-    _firebaseAuth.currentUser!.delete();
+  void deleteUserAccount() async {
 
     // Delete data from firestore
     String uid = _firebaseAuth.currentUser!.uid;
-    await FirebaseFirestore.instance.collection('cpath').doc(uid).delete();
+    DatabaseService().usersAuthCollection.doc(uid).delete();
+    DatabaseService().collection.doc(uid).delete();
+
+    // Delete user auth from firebase auth:
+    _firebaseAuth.currentUser!.delete();
   }
 }

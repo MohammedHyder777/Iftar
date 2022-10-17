@@ -76,7 +76,8 @@ class _SignUpState extends State<SignUp> {
                 ),
                 const SizedBox(height: 20,),
                 TextFormField(
-                  decoration: fieldDecor(label: 'الاسم'),
+                  textDirection: TextDirection.rtl,
+                  decoration: fieldDecor(label: 'الاسم',).copyWith(hintTextDirection: TextDirection.rtl),
                   validator: (value) => value!.isEmpty ? 'أدخل اسمك' : null,
                   onChanged: (value) {
                     setState(() {

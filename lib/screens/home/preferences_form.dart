@@ -46,7 +46,7 @@ class _PreferencesFormState extends State<PreferencesForm> {
             ),
             ElevatedButton.icon(
               onPressed: () {
-                as.deleteUserData();
+                as.deleteUserAccount();
                 as.signOut();
                 Navigator.pop(context);
               },
@@ -159,7 +159,7 @@ class _PreferencesFormState extends State<PreferencesForm> {
                                 setState(() {
                                   updateClicked = true;
                                 });
-                                await DatabaseService(user.uid).updateUserData(
+                                await DatabaseService(user.uid).updateUserOrderData(
                                     newFood ?? userData.food,
                                     newName ?? userData.name,
                                     newStrength ?? userData.strength);
