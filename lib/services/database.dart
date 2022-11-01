@@ -27,31 +27,31 @@ class DatabaseService {
   }
 
   /// Get the name of user with uid = uid
-  String getUserFullName(uid) {
+  Future<String> getUserFullName(uid) async {
     String name = '';
-    usersAuthCollection.doc(uid).get().then((value) {
-      var docData = value.data() as Map;
-      name = docData['name'];
-    }).onError((error, stackTrace) {
-      name = 'مستخدم جديد';
-    });
-
+    DocumentSnapshot snapshot = await usersAuthCollection.doc(uid).get();
+    var docData = snapshot.data() as Map;
+    name = docData['name'];
+  
     return name;
   }
 
   // The collection (m_coll) will contain collections of days
   // create a collection ref. for the collection of this day (coll_13_10_2022)
-  final CollectionReference collection = FirebaseFirestore.instance
+  static final CollectionReference collection = FirebaseFirestore.instance
       .collection('m_coll')
       .doc('subColl_${today.day}_${today.month}_${today.year}')
       .collection('orders');
 
-  /// create or update a document for a certain uid
+  /// create or update a document for a certain uid. Ensure to update the model object IUser in home
   Future updateUserOrderData(String food, String name, int strength) async {
-    await usersAuthCollection.doc(uid).set({'name': name}, SetOptions(merge: true));
+    await usersAuthCollection
+        .doc(uid)
+        .set({'name': name}, SetOptions(merge: true));
     await collection
         .doc(uid)
         .set({'food': food, 'name': name, 'strength': strength});
+    
   }
 
   /// create a data list from snapshot
@@ -89,7 +89,7 @@ class DatabaseService {
   }
 
   /// Check if he has data (There is a doc with id = uid in the collection)
-  Future<bool> hasData(uid) async {
+  static Future<bool> hasData(uid) async {
     bool ok;
     ok = await collection.doc(uid).get().then((value) => ok = value.exists);
     return ok;

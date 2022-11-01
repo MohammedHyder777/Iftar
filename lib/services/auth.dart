@@ -1,10 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:iftar/services/database.dart';
 import 'package:iftar/user.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
 
   /// Create custom user object IUser:
   IUser? _userFromFBUser(User? fbuser, String name) {
@@ -15,10 +16,10 @@ class AuthService {
   Stream<IUser?> get user {
     return _firebaseAuth
         .authStateChanges()
-        .map((user) => _userFromFBUser(user, 'fullName'));
+        .map((user) => _userFromFBUser(user, 'أدخل اسمك هنا'));
   }
 
-  // sign in anonymously
+  /// sign in anonymously
   Future signInAnon() async {
     try {
       UserCredential result = await _firebaseAuth.signInAnonymously();
@@ -30,7 +31,7 @@ class AuthService {
     }
   }
 
-  // sign in with email and passwrod
+  /// sign in with email and passwrod
   Future signInWithEmail(email, pw) async {
     try {
       UserCredential result = await _firebaseAuth.signInWithEmailAndPassword(
@@ -39,9 +40,11 @@ class AuthService {
       User? user = result.user;
 
       // Get the fullname of this user
-      String fullName = DatabaseService(user!.uid).getUserFullName(user.uid);
-      // Check if he has a doc in today collection. If not create one.
-      if (await DatabaseService().hasData(user.uid)) {
+      String fullName = await DatabaseService().getUserFullName(user!.uid);
+      // Check if he has a doc in today's collection. If not create one.
+      if (await DatabaseService.hasData(user.uid)) {
+        print(
+            '====================\n بياناته مسجلة في قاعدة البيانات \n====================\n');
       } else {
         await DatabaseService(user.uid)
             .updateUserOrderData('لن أفطر معكم', fullName, 500);
@@ -57,7 +60,52 @@ class AuthService {
     }
   }
 
-  // register with email and add to database
+  /// sign in with google
+  Future signInWithGoogle() async {
+    // Trigger the authentication flow
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      // Once signed in, return the UserCredential
+      UserCredential result =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      User? user = result.user;
+
+      // Check if he has a doc in user auth collection. If not create one.
+      if (await DatabaseService().hasDataInAuthCollection(user!.uid)) {
+        print('====================\n بياناته مسجلة  \n====================\n');
+      } else {
+        DatabaseService(user.uid)
+            .addUserToDB(_userFromFBUser(user, user.displayName!)!);
+      }
+      // Check if he has a doc in today's collection. If not create one.
+      if (await DatabaseService.hasData(user.uid)) {
+        print(
+            '====================\n بياناته مسجلة في قاعدة البيانات \n====================\n');
+      } else {
+        await DatabaseService(user.uid)
+            .updateUserOrderData('لن أفطر معكم', googleUser!.displayName!, 500);
+      }
+      return _userFromFBUser(user, googleUser!.displayName!);
+    } on FirebaseAuthException catch (error) {
+      throw FirebaseAuthException(code: error.code);
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  /// register with email and add to database
   Future signUpWithEmail(String name, String email, String password) async {
     try {
       UserCredential result = await _firebaseAuth
@@ -78,7 +126,7 @@ class AuthService {
     }
   }
 
-  // sign out
+  /// sign out
   Future signOut() async {
     try {
       return await _firebaseAuth.signOut();
@@ -90,13 +138,30 @@ class AuthService {
 
   /// Delete User account from fbauth and his data from fbfirestore
   void deleteUserAccount() async {
-
     // Delete data from firestore
-    String uid = _firebaseAuth.currentUser!.uid;
-    DatabaseService().usersAuthCollection.doc(uid).delete();
-    DatabaseService().collection.doc(uid).delete();
+    try {
+      String uid = _firebaseAuth.currentUser!.uid;
+      await DatabaseService().usersAuthCollection.doc(uid).delete();
+      await DatabaseService.collection.doc(uid).delete();
+    } on FirebaseException catch (e) {
+      print('Unable to connect database.');
+      throw FirebaseException(
+          plugin: e.plugin, code: e.code, message: e.message);
+    }
 
     // Delete user auth from firebase auth:
-    _firebaseAuth.currentUser!.delete();
+    await _firebaseAuth.currentUser!.delete();
+  }
+
+  /// Delete user data from today's collection without touching user auth collection and authentication
+  void deleteOrder() async {
+    try {
+      String uid = _firebaseAuth.currentUser!.uid;
+      await DatabaseService.collection.doc(uid).delete();
+    } on FirebaseException catch (e) {
+      print('Unable to connect database.');
+      throw FirebaseException(
+          plugin: e.plugin, code: e.code, message: e.message);
+    }
   }
 }

@@ -127,7 +127,21 @@ class _SignInState extends State<SignIn> {
                               color: Colors.white70,
                             ),
                           ),
-                        )
+                        ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.g_mobiledata, size: 30,),
+                      TextButton(
+                          onPressed: () {
+                            _authService.signInWithGoogle();
+                          },
+                          child: const Text('ادخل بحساب جوجل')),
+                    ],
+                  )
                 ],
               ),
             )),
