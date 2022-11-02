@@ -5,18 +5,18 @@ import 'package:iftar/user.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-
+  // String name = '';
 
   /// Create custom user object IUser:
-  IUser? _userFromFBUser(User? fbuser, String name) {
-    return fbuser != null ? IUser(fbuser.uid, fbuser.email, name) : null;
+  IUser? _userFromFBUser(User? fbuser) {
+    return fbuser != null ? IUser(fbuser.uid, fbuser.email, fbuser.displayName ?? 'Anon') : null;
   }
 
   /// user state changes stream
   Stream<IUser?> get user {
     return _firebaseAuth
         .authStateChanges()
-        .map((user) => _userFromFBUser(user, 'أدخل اسمك هنا'));
+        .map((user) => _userFromFBUser(user));
   }
 
   /// sign in anonymously
@@ -24,7 +24,7 @@ class AuthService {
     try {
       UserCredential result = await _firebaseAuth.signInAnonymously();
       User? user = result.user;
-      return _userFromFBUser(user, 'Anon');
+      return _userFromFBUser(user);
     } catch (e) {
       print(e.toString());
       return null;
@@ -40,18 +40,18 @@ class AuthService {
       User? user = result.user;
 
       // Get the fullname of this user
-      String fullName = await DatabaseService().getUserFullName(user!.uid);
+      // String fullName = await DatabaseService().getUserFullName(user!.uid);
       // Check if he has a doc in today's collection. If not create one.
-      if (await DatabaseService.hasData(user.uid)) {
+      if (await DatabaseService.hasData(user!.uid)) {
         print(
             '====================\n بياناته مسجلة في قاعدة البيانات \n====================\n');
       } else {
         await DatabaseService(user.uid)
-            .updateUserOrderData('لن أفطر معكم', fullName, 500);
+            .updateUserOrderData('لن أفطر معكم', user.displayName!, 500);
       }
       //////////////////////////////
 
-      return _userFromFBUser(user, fullName);
+      return _userFromFBUser(user);
     } on FirebaseAuthException catch (error) {
       throw FirebaseAuthException(code: error.code);
     } catch (e) {
@@ -86,7 +86,7 @@ class AuthService {
         print('====================\n بياناته مسجلة  \n====================\n');
       } else {
         DatabaseService(user.uid)
-            .addUserToDB(_userFromFBUser(user, user.displayName!)!);
+            .addUserToDB(_userFromFBUser(user)!);
       }
       // Check if he has a doc in today's collection. If not create one.
       if (await DatabaseService.hasData(user.uid)) {
@@ -96,7 +96,7 @@ class AuthService {
         await DatabaseService(user.uid)
             .updateUserOrderData('لن أفطر معكم', googleUser!.displayName!, 500);
       }
-      return _userFromFBUser(user, googleUser!.displayName!);
+      return _userFromFBUser(user);
     } on FirebaseAuthException catch (error) {
       throw FirebaseAuthException(code: error.code);
     } catch (e) {
@@ -111,13 +111,16 @@ class AuthService {
       UserCredential result = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
       User? fbuser = result.user;
+      
+      // Change displayname in fbuser:
+      await fbuser!.updateDisplayName(name);
       // Create a document for the new user
-      await DatabaseService(fbuser!.uid)
+      await DatabaseService(fbuser.uid)
           .updateUserOrderData('لن أفطر معكم', name, 500);
       // Add the user to the users_auth_collection
-      DatabaseService(fbuser.uid).addUserToDB(_userFromFBUser(fbuser, name)!);
+      DatabaseService(fbuser.uid).addUserToDB(_userFromFBUser(fbuser)!);
 
-      return _userFromFBUser(fbuser, name);
+      return _userFromFBUser(fbuser);
     } on FirebaseAuthException catch (error) {
       throw FirebaseAuthException(code: error.code);
     } catch (e) {

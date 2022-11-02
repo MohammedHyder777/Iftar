@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:iftar/data.dart';
 import 'package:iftar/user.dart';
 
@@ -32,7 +33,7 @@ class DatabaseService {
     DocumentSnapshot snapshot = await usersAuthCollection.doc(uid).get();
     var docData = snapshot.data() as Map;
     name = docData['name'];
-  
+
     return name;
   }
 
@@ -45,13 +46,15 @@ class DatabaseService {
 
   /// create or update a document for a certain uid. Ensure to update the model object IUser in home
   Future updateUserOrderData(String food, String name, int strength) async {
+    // change the displayname of fb authentication user
+    await FirebaseAuth.instance.currentUser!.updateDisplayName(name);
+    
     await usersAuthCollection
         .doc(uid)
         .set({'name': name}, SetOptions(merge: true));
     await collection
         .doc(uid)
         .set({'food': food, 'name': name, 'strength': strength});
-    
   }
 
   /// create a data list from snapshot
