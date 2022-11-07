@@ -9,7 +9,9 @@ class AuthService {
 
   /// Create custom user object IUser:
   IUser? _userFromFBUser(User? fbuser) {
-    return fbuser != null ? IUser(fbuser.uid, fbuser.email, fbuser.displayName ?? 'Anon') : null;
+    return fbuser != null
+        ? IUser(fbuser.uid, fbuser.email, fbuser.displayName ?? 'Anon')
+        : null;
   }
 
   /// user state changes stream
@@ -85,8 +87,7 @@ class AuthService {
       if (await DatabaseService().hasDataInAuthCollection(user!.uid)) {
         print('====================\n بياناته مسجلة  \n====================\n');
       } else {
-        DatabaseService(user.uid)
-            .addUserToDB(_userFromFBUser(user)!);
+        DatabaseService(user.uid).addUserToDB(_userFromFBUser(user)!);
       }
       // Check if he has a doc in today's collection. If not create one.
       if (await DatabaseService.hasData(user.uid)) {
@@ -111,7 +112,7 @@ class AuthService {
       UserCredential result = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
       User? fbuser = result.user;
-      
+
       // Change displayname in fbuser:
       await fbuser!.updateDisplayName(name);
       // Create a document for the new user
@@ -132,6 +133,7 @@ class AuthService {
   /// sign out
   Future signOut() async {
     try {
+      await GoogleSignIn().disconnect();
       return await _firebaseAuth.signOut();
     } on Exception catch (e) {
       print(e.toString());
