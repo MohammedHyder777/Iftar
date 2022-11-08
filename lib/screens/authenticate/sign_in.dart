@@ -134,12 +134,12 @@ class _SignInState extends State<SignIn> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.g_mobiledata, size: 30,),
+                      Icon(Icons.g_mobiledata, size: 40, color: Colors.deepOrange[400],),
                       TextButton(
                           onPressed: () {
                             _authService.signInWithGoogle();
                           },
-                          child: const Text('ادخل بحساب جوجل')),
+                          child: const Text('ادخل بحساب جوجل', style: TextStyle(fontSize: 18),)),
                     ],
                   )
                 ],

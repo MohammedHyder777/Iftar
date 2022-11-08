@@ -133,7 +133,10 @@ class AuthService {
   /// sign out
   Future signOut() async {
     try {
-      await GoogleSignIn().disconnect();
+      try { // The try block is to avoid PlatformException(status, Failed to disconnect., null, null) whith normal auth users.
+        await GoogleSignIn().disconnect(); // To ask to choose a google account in the next google sign in.
+      } catch(e){}
+
       return await _firebaseAuth.signOut();
     } on Exception catch (e) {
       print(e.toString());
@@ -158,15 +161,4 @@ class AuthService {
     await _firebaseAuth.currentUser!.delete();
   }
 
-  /// Delete user data from today's collection without touching user auth collection and authentication
-  void deleteOrder() async {
-    try {
-      String uid = _firebaseAuth.currentUser!.uid;
-      await DatabaseService.collection.doc(uid).delete();
-    } on FirebaseException catch (e) {
-      print('Unable to connect database.');
-      throw FirebaseException(
-          plugin: e.plugin, code: e.code, message: e.message);
-    }
-  }
 }

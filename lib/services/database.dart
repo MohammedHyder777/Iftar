@@ -97,4 +97,15 @@ class DatabaseService {
     ok = await collection.doc(uid).get().then((value) => ok = value.exists);
     return ok;
   }
+
+  /// Delete user data from today's collection without touching user auth collection and authentication
+  void deleteOrder(uid) async {
+    try {
+      await collection.doc(uid).delete();
+    } on FirebaseException catch (e) {
+      print('Unable to connect database.');
+      throw FirebaseException(
+          plugin: e.plugin, code: e.code, message: e.message);
+    }
+  }
 }

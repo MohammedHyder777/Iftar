@@ -43,6 +43,7 @@ dependencies:
   flutter_speed_dial: ^6.1.0+1
   pdf: ^3.8.3
   google_sign_in: ^5.4.2
+  syncfusion_flutter_charts: ^20.3.52
   
 
 dev_dependencies:

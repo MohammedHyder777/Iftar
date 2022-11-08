@@ -11,9 +11,14 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
         floatingLabelStyle: const TextStyle(color: Color.fromARGB(255, 71, 71, 71)),
         filled: true,
         fillColor: const Color.fromARGB(69, 33, 149, 243),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.purple, width: 3),
-        )
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.purple[400]!, width: 4),
+          borderRadius: BorderRadius.circular(27.0),
+        ),
+        border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(27.0),
+      ),
+        
       );
   }
 

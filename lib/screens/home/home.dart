@@ -1,9 +1,9 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:iftar/data.dart';
+import 'package:iftar/reports.dart';
 import 'package:iftar/screens/home/statistics_card.dart';
 import 'package:iftar/screens/home/data_list.dart';
 import 'package:iftar/screens/home/preferences_form.dart';
@@ -35,10 +35,10 @@ class _HomeState extends State<Home> {
     return count;
   }
 
- 
   @override
   Widget build(BuildContext context) {
     final IUser? user = Provider.of<IUser?>(context);
+    DatabaseService dbService = DatabaseService(user!.uid);
 
     /// Show Preferences //////////////////////////////////
     void showPreferences() {
@@ -55,7 +55,7 @@ class _HomeState extends State<Home> {
 
     ////////////////////////////////////////////////////////
 
-/// Delete order confirmation messege
+    /// Delete order confirmation messege
     void viewDeleteOrderConfirm() {
       showDialog(
         barrierColor: const Color.fromARGB(171, 230, 118, 118),
@@ -88,7 +88,7 @@ class _HomeState extends State<Home> {
               ElevatedButton.icon(
                 onPressed: () {
                   try {
-                    _authService.deleteOrder();
+                    dbService.deleteOrder(user.uid);
                     // _authService.signOut();
                   } on FirebaseException catch (e) {
                     throw Exception();
@@ -108,7 +108,7 @@ class _HomeState extends State<Home> {
       );
     }
     //////////////////////////////////////////
-    
+
     /// Delete account confirmation messege
     void viewDeleteConfirm() {
       showDialog(
@@ -185,10 +185,11 @@ class _HomeState extends State<Home> {
         ),
       );
     }
+    ////////////////////////////////////////////////////////////////////////////
 
     return StreamProvider<List<Data>>.value(
       initialData: const [],
-      value: DatabaseService().document,
+      value: dbService.document,
       builder: (context, child) => Scaffold(
         backgroundColor: Colors.blueGrey[200],
         appBar: AppBar(
@@ -206,7 +207,7 @@ class _HomeState extends State<Home> {
                 ),
                 children: [
                   TextSpan(
-                      text: '\n${user!.email}\n',
+                      text: '\n${user.email}\n',
                       style: const TextStyle(fontSize: 10))
                 ]),
             textDirection: TextDirection.rtl,
@@ -260,7 +261,7 @@ class _HomeState extends State<Home> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Icon(Icons.print_rounded, color: Colors.indigo[800]),
-                      Text('اطبع تقريرا',
+                      Text('اعرض تقريرا',
                           style: TextStyle(color: Colors.indigo[800])),
                     ],
                   ),
@@ -291,9 +292,10 @@ class _HomeState extends State<Home> {
               onChanged: (val) async {
                 if (val == '1') {
                   if (await DatabaseService.hasData(user.uid)) {
-                  showPreferences();
+                    showPreferences();
                   } else {
-                    DatabaseService(user.uid).updateUserOrderData('لن أفطر معكم', user.name, 300);
+                    dbService.updateUserOrderData(
+                        'لن أفطر معكم', user.name, 300);
                     showPreferences();
                   }
                 }
@@ -301,7 +303,8 @@ class _HomeState extends State<Home> {
                   _authService.signOut();
                 }
                 if (val == '3') {
-                  createPdfReport();
+                  // createPdfReport();
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const ReportScreen(),));
                 }
                 if (val == '4') {
                   viewDeleteOrderConfirm();
