@@ -13,6 +13,17 @@ import 'package:iftar/user.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
+int countFoodOrders(String type, BuildContext mycontext) {
+    final data = Provider.of<List<Data>>(mycontext);
+    int count = 0;
+    for (var user in data) {
+      if (user.food == type) {
+        count++;
+      }
+    }
+    return count;
+  }
+
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -24,16 +35,6 @@ class _HomeState extends State<Home> {
   final AuthService _authService = AuthService();
   String currentCriteria = 'food';
 
-  int countFoodOrders(String type, BuildContext mycontext) {
-    final data = Provider.of<List<Data>>(mycontext);
-    int count = 0;
-    for (var user in data) {
-      if (user.food == type) {
-        count++;
-      }
-    }
-    return count;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -304,7 +305,7 @@ class _HomeState extends State<Home> {
                 }
                 if (val == '3') {
                   // createPdfReport();
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const ReportScreen(),));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ReportScreen(),));
                 }
                 if (val == '4') {
                   viewDeleteOrderConfirm();
