@@ -105,7 +105,7 @@ class _SignUpState extends State<SignUp> {
                                 } else if (e.code == 'invalid-email') {
                                   specialError = 'أدخل بريدا إلكترونيا صحيحا';
                                 } else if(e.code == 'weak-password'){
-                                  specialError = 'كلمة سر ضعيفة، قوها يزيادة طولها';
+                                  specialError = 'كلمة سر ضعيفة، قوّها يزيادة طولها';
                                 }
                           setState(() {
                             error = (specialError.isNotEmpty)
