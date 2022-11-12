@@ -17,12 +17,17 @@ int countFoodOrders(String type, List<Data> data) {
   }
 //*//////////////// CLASSES: ///////////////////////////////////////////////////
 
-class ReportScreen extends StatelessWidget {
+class ReportScreen extends StatefulWidget {
   
   const ReportScreen({super.key});
 
-  
-// The data source
+  @override
+  State<ReportScreen> createState() => _ReportScreenState();
+}
+
+class _ReportScreenState extends State<ReportScreen> {
+
+  String chart_type = 'Pie';
   @override
   Widget build(BuildContext context) {
     
@@ -44,7 +49,24 @@ class ReportScreen extends StatelessWidget {
         body: Center(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(18.0,22.0,18.0,36.0),
-            child: DoughnutChart(dataList: chartData,)
+            child: Column(
+              children: [
+                DropdownButton<String>(
+                  value: chart_type,
+                  items: ['Bar','Pie','Doughnut'].map((e) {
+                    return DropdownMenuItem(value: e,child: Text(e),);
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {chart_type = value!;});
+                  },
+                    ),
+                chart_type == 'Bar'
+                        ? BarChart(dataList: chartData)
+                        : (chart_type == 'Pie'
+                            ? PieChart(dataList: chartData)
+                            : DoughnutChart(dataList: chartData)),
+              ],
+            )
           ),
         ),
       );
