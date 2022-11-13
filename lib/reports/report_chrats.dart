@@ -27,7 +27,17 @@ class BarChart extends StatelessWidget {
               yValueMapper: (ChartData data, _) => data.y,
               width: 0.5,
               borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(20), topLeft: Radius.circular(20)))
+                  topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+              pointColorMapper: (datum, index) {
+              if (datum.x == 'فول') {
+                return Colors.brown;
+              }
+              if (datum.x == 'لن أفطر معكم') {
+                return Colors.indigo;
+              }
+              return null;
+            },
+              )
         ]);
   }
 }
@@ -62,7 +72,7 @@ class PieChart extends StatelessWidget {
           // Segments will explode on tap
           explode: true,
           // Index i segment will be exploded on initial rendering
-          explodeIndex: 0,
+          // explodeIndex: 0,
           // Radius for each segment from data source
           
         )

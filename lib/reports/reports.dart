@@ -27,7 +27,7 @@ class ReportScreen extends StatefulWidget {
 
 class _ReportScreenState extends State<ReportScreen> {
 
-  String chart_type = 'Pie';
+  String chartType = 'Pie';
   @override
   Widget build(BuildContext context) {
     
@@ -50,21 +50,33 @@ class _ReportScreenState extends State<ReportScreen> {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(18.0,22.0,18.0,36.0),
             child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                DropdownButton<String>(
-                  value: chart_type,
-                  items: ['Bar','Pie','Doughnut'].map((e) {
-                    return DropdownMenuItem(value: e,child: Text(e),);
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {chart_type = value!;});
-                  },
-                    ),
-                chart_type == 'Bar'
-                        ? BarChart(dataList: chartData)
-                        : (chart_type == 'Pie'
-                            ? PieChart(dataList: chartData)
-                            : DoughnutChart(dataList: chartData)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    DropdownButton<String>(
+                      value: chartType,
+                      items: ['Bar','Pie','Doughnut'].map((e) {
+                        return DropdownMenuItem(value: e,child: Text('$e Chart'),);
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {chartType = value!;});
+                      },
+                        ),
+                    const Text('اختر شكل عرض البيانات:   ', textDirection: TextDirection.rtl,)
+                  ],
+                ),
+                const SizedBox(height: 70,),
+                Flexible(
+                  flex: 3,
+                  child: chartType == 'Bar'
+                          ? BarChart(dataList: chartData)
+                          : (chartType == 'Pie'
+                              ? PieChart(dataList: chartData)
+                              : DoughnutChart(dataList: chartData)),
+                ),
               ],
             )
           ),
