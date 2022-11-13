@@ -27,21 +27,23 @@ class ReportScreen extends StatefulWidget {
 
 class _ReportScreenState extends State<ReportScreen> {
 
-  String chartType = 'Pie';
+  String chartType = 'Bar';
+  Widget? choosenChart;
+
   @override
   Widget build(BuildContext context) {
-    
 
     return StreamProvider<List<Data>>.value(
       initialData: const [],
       value: DatabaseService().document,
-      builder:(context, child) {
-        List<ChartData> chartData = [];
-        final data = Provider.of<List<Data>>(context);
+      builder:(icontext, child) {
+        List<ChartData> chartDataList = [];
+        final data = Provider.of<List<Data>>(icontext);
         for (var e in ['فول', 'غير الفول', 'لن أفطر معكم']) {
-          chartData.add(ChartData(e, countFoodOrders(e, data)));
+          chartDataList.add(ChartData(e, countFoodOrders(e, data)));
         }
-
+        print(chartDataList.first.y);
+        choosenChart ??= BarChart(dataList: chartDataList);//BarChart(dataList: chartDataList); // If ?? is not used Barchart will be assigned to choosenChart at every build call and the chart will never change.
         return Scaffold(
         appBar: AppBar(
           title: const Text('صفحة التقارير'),
@@ -62,7 +64,22 @@ class _ReportScreenState extends State<ReportScreen> {
                         return DropdownMenuItem(value: e,child: Text('$e Chart'),);
                       }).toList(),
                       onChanged: (value) {
-                        setState(() {chartType = value!;});
+                        switch (value) {
+                          case 'Bar':
+                            chartType = 'Bar'; //Necessary to change the value of the dropdownbutton. 
+                            choosenChart = BarChart(dataList: chartDataList);
+                            break;
+                          case 'Pie':
+                            chartType = 'Pie';
+                            choosenChart = PieChart(dataList: chartDataList);
+                            break;
+                          case 'Doughnut':
+                            chartType = 'Doughnut';
+                            choosenChart = DoughnutChart(dataList: chartDataList);
+                            break;
+                          default:
+                        }
+                        setState(() {});
                       },
                         ),
                     const Text('اختر شكل عرض البيانات:   ', textDirection: TextDirection.rtl,)
@@ -71,11 +88,7 @@ class _ReportScreenState extends State<ReportScreen> {
                 const SizedBox(height: 70,),
                 Flexible(
                   flex: 3,
-                  child: chartType == 'Bar'
-                          ? BarChart(dataList: chartData)
-                          : (chartType == 'Pie'
-                              ? PieChart(dataList: chartData)
-                              : DoughnutChart(dataList: chartData)),
+                  child: choosenChart!
                 ),
               ],
             )
@@ -88,10 +101,14 @@ class _ReportScreenState extends State<ReportScreen> {
 }
 
 // The data source
-// final List<ChartData> chartData = [
+// final List<ChartData> chartDataList = [
 //   ChartData('فول', 35),
 //   ChartData('غيره', 28),
 //   ChartData('لن أفطر', 34),
 // ];
 
-
+// chartType == 'Bar'
+//                           ? BarChart(dataList: chartDataList)
+//                           : (chartType == 'Pie'
+//                               ? PieChart(dataList: chartDataList)
+//                               : DoughnutChart(dataList: chartDataList)),
