@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:iftar/data.dart';
-import 'package:iftar/reports/reports.dart';
 import 'package:iftar/screens/home/statistics_card.dart';
 import 'package:iftar/screens/home/data_list.dart';
 import 'package:iftar/screens/home/preferences_form.dart';
@@ -190,7 +189,7 @@ class _HomeState extends State<Home> {
 
     return StreamProvider<List<Data>>.value(
       initialData: const [],
-      value: dbService.document,
+      value: DatabaseService.document,
       builder: (context, child) => Scaffold(
         backgroundColor: Colors.blueGrey[200],
         appBar: AppBar(
@@ -305,7 +304,9 @@ class _HomeState extends State<Home> {
                 }
                 if (val == '3') {
                   // createPdfReport();
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ReportScreen(),));
+                  if(mounted){
+                    Navigator.pushNamed(context, 'reports_screen');
+                  }
                 }
                 if (val == '4') {
                   viewDeleteOrderConfirm();
@@ -323,9 +324,7 @@ class _HomeState extends State<Home> {
                   image: AssetImage('assets/logo.jpg'),
                   fit: BoxFit.contain,
                   opacity: 0.5)),
-          child: DataList(
-            sortCriteria: currentCriteria,
-          ),
+          child: DataList(sortCriteria: currentCriteria,),
         ),
         floatingActionButton: SpeedDial(
           spaceBetweenChildren: 14,

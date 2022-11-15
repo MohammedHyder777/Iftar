@@ -58,7 +58,7 @@ class DatabaseService {
   }
 
   /// create a data list from snapshot
-  List<Data> _dataListFromSnapShot(QuerySnapshot snapshot) {
+  static List<Data> _dataListFromSnapShot(QuerySnapshot snapshot) {
     return snapshot.docs.map((adoc) {
       var docData = adoc.data() as Map;
       return Data(
@@ -71,7 +71,7 @@ class DatabaseService {
   }
 
   /// get data stream from a collection
-  Stream<List<Data>> get document {
+  static Stream<List<Data>> get document {
     return collection.snapshots().map(_dataListFromSnapShot);
   }
 
