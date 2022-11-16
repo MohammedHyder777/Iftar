@@ -79,25 +79,22 @@ class _ReportScreenState extends State<ReportScreen> {
                           onChanged: (value) {
                             switch (value) {
                               case 'Bar':
-                                chartType =
-                                    'Bar'; //Necessary to change the value of the dropdownbutton.
-                                choosenChart =
-                                    BarChart(dataList: chartDataList);
+                                chartType = 'Bar'; //Necessary to change the value of the dropdownbutton.
+                                // choosenChart = BarChart(dataList: chartDataList);
                                 break;
                               case 'Pie':
                                 chartType = 'Pie';
-                                choosenChart =
-                                    PieChart(dataList: chartDataList);
+                                // choosenChart = PieChart(dataList: chartDataList);
                                 break;
                               case 'Doughnut':
                                 chartType = 'Doughnut';
-                                choosenChart =
-                                    DoughnutChart(dataList: chartDataList);
+                                // choosenChart = DoughnutChart(dataList: chartDataList);
                                 break;
                               default:
                             }
                             setState(() {});
                           },
+                          elevation: 24,
                         ),
                         const Text(
                           'اختر شكل عرض البيانات:   ',
@@ -110,14 +107,21 @@ class _ReportScreenState extends State<ReportScreen> {
                     ),
                     Flexible(
                       flex: 3,
-                      child: chartType == 'Bar'
-                          ? BarChart(dataList: chartDataList)
-                          : (chartType == 'Pie'
-                              ? PieChart(dataList: chartDataList)
-                              : DoughnutChart(dataList: chartDataList)),
+                      child: GenericChart(type: chartType, dataList: chartDataList),
                     ),
                   ],
                 )),
+          ),
+          floatingActionButton: StreamProvider.value(
+
+            builder: ((ycontext, child) =>  FloatingActionButton(
+              child: const Icon(Icons.workspaces),
+              onPressed: () {
+                showDialog(context: context, builder: (zcontext) {
+                var snaps = Provider.of<List<dynamic>>(zcontext, listen: false);
+                  return Text(snaps.first);
+                },);
+            },)), value: DatabaseService().stats, initialData: const [],
           ),
         );
       },

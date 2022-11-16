@@ -48,7 +48,7 @@ class DatabaseService {
   Future updateUserOrderData(String food, String name, int strength) async {
     // change the displayname of fb authentication user
     await FirebaseAuth.instance.currentUser!.updateDisplayName(name);
-    
+
     await usersAuthCollection
         .doc(uid)
         .set({'name': name}, SetOptions(merge: true));
@@ -108,4 +108,16 @@ class DatabaseService {
           plugin: e.plugin, code: e.code, message: e.message);
     }
   }
+
+  //*/ Reports Streams ///////////////////////////////////////////////////:
+
+
+
+  Stream get stats {
+    List foods = ['فول', 'غير الفول', 'لن أفطر معكم'];
+    List statistics = [];
+
+    return FirebaseFirestore.instance.collection('m_coll').snapshots();
+  }
+
 }
