@@ -111,13 +111,60 @@ class DatabaseService {
 
   //*/ Reports Streams ///////////////////////////////////////////////////:
 
+  Future<String> futureTask() async {
+    List statistics = ['888'];
 
-
-  Stream get stats {
-    List foods = ['فول', 'غير الفول', 'لن أفطر معكم'];
-    List statistics = [];
-
-    return FirebaseFirestore.instance.collection('m_coll').snapshots();
+    await FirebaseFirestore.instance
+        .collection('m_coll')
+        .snapshots()
+        .forEach((subcollSnap) {
+      for (var doc in subcollSnap.docs) {
+        statistics.add(doc.id);
+      }
+    });
+    print(statistics.toString());
+    return statistics.toString();
   }
 
+  Stream<String> get stats async* {
+    List foods = ['فول', 'غير الفول', 'لن أفطر معكم'];
+
+    // int i = 0;
+    // while (true) {
+    //   await Future.delayed(const Duration(seconds: 1), () => i++,);
+
+    // yield i;
+    // }
+
+    List statistics = ['888'];
+    while (true) {
+
+      print(statistics.toString());
+      await FirebaseFirestore.instance
+          .collection('m_coll')
+          .snapshots()
+          .forEach((subcollSnap) {
+        for (var doc in subcollSnap.docs) {
+          statistics.add(doc.id);
+        }
+      });
+      yield statistics.toString();
+    }
+  }
+}
+
+testing() async {
+  CollectionReference coll = FirebaseFirestore.instance.collection('m_coll');
+
+  print('before await');
+  String x = await coll.id;
+  print('length : $x');
+  print('after await');
+  await coll.snapshots().forEach(
+    (snap) {
+      for (var doc in snap.docs) {
+        print(doc.id);
+      }
+    },
+  );
 }
