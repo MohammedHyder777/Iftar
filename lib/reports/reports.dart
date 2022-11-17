@@ -132,12 +132,22 @@ class _ReportScreenState extends State<ReportScreen> {
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () async {
+                List foods = ['فول', 'غير الفول', 'لن أفطر معكم'];
+                List statistics = [];
                 CollectionReference coll =
                     FirebaseFirestore.instance.collection("m_col");
 
-                await coll.snapshots().forEach(
+                FirebaseFirestore.instance.collectionGroup('orders').get().then(
                   (snap) {
                     print(snap.docs.length);
+                  },
+                );
+                await coll.snapshots().forEach(
+                  (snap) {
+                    for (var doc in snap.docs) {
+                      Map data = doc.data() as Map;
+                      for (String f in foods) {}
+                    }
                   },
                 );
               },
