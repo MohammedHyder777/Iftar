@@ -111,21 +111,7 @@ class DatabaseService {
 
   //*/ Reports Streams ///////////////////////////////////////////////////:
 
-  Future<String> futureTask() async {
-    List statistics = ['888'];
-
-    await FirebaseFirestore.instance
-        .collection('m_coll')
-        .snapshots()
-        .forEach((subcollSnap) {
-      for (var doc in subcollSnap.docs) {
-        statistics.add(doc.id);
-      }
-    });
-    print(statistics.toString());
-    return statistics.toString();
-  }
-
+  
   Stream<String> get stats async* {
     List foods = ['فول', 'غير الفول', 'لن أفطر معكم'];
 
@@ -151,20 +137,41 @@ class DatabaseService {
       yield statistics.toString();
     }
   }
-}
 
-testing() async {
-  CollectionReference coll = FirebaseFirestore.instance.collection('m_coll');
+  Stream<Map<String, int>> get testing {
+  return FirebaseFirestore.instance.collectionGroup('orders').snapshots().map(getStatsFromSnapshot);
+  }
 
-  print('before await');
-  String x = await coll.id;
-  print('length : $x');
-  print('after await');
-  await coll.snapshots().forEach(
-    (snap) {
-      for (var doc in snap.docs) {
-        print(doc.id);
+ Map<String, int> getStatsFromSnapshot(snap) {
+    List foods = ['فول', 'غير الفول', 'لن أفطر معكم'];
+    int fcount = 0;
+    int notfcount = 0;
+    int fastcount = 0;
+    for (var doc in snap.docs) {
+      switch (doc.data()['food']) {
+        case 'فول':
+          fcount++;
+          break;
+        case 'غير الفول':
+          notfcount++;
+          break;
+        case 'لن أفطر معكم':
+          fastcount++;
+          break;
+        default:
       }
-    },
-  );
+    }
+    Map<String, int> statsMap = {
+      'فول': fcount,
+      'غير الفول': notfcount,
+      'لن أفطر معكم': fastcount
+    };
+
+    print(statsMap);
+    return statsMap;
+  }
+
+
 }
+
+

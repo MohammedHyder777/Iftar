@@ -36,20 +36,26 @@ class _ReportScreenState extends State<ReportScreen> {
     await Future.delayed(const Duration(seconds: 2));
   }
 
-  String chartType = 'Pie';
+  
   @override
   Widget build(BuildContext context) {
     
 
-    return StreamProvider<List<Data>>.value(
-      initialData: const [],
-      value: DatabaseService().document,
+    return StreamProvider<Map>.value(
+      initialData: const {},
+      value: DatabaseService().testing,
       builder:(context, child) {
         List<ChartData> chartData = [];
-        final data = Provider.of<List<Data>>(context);
-        for (var e in ['فول', 'غير الفول', 'لن أفطر معكم']) {
-          chartData.add(ChartData(e, countFoodOrders(e, data)));
-        }
+        // final data = Provider.of<List<Data>>(context);
+        // for (var e in ['فول', 'غير الفول', 'لن أفطر معكم']) {
+        //   chartData.add(ChartData(e, countFoodOrders(e, data)));
+        // }
+
+        Map data = Provider.of<Map>(context);
+        print('data: $data');
+        data.forEach((key, value) {
+          chartData.add(ChartData(key, value));
+        },);
 
         return Scaffold(
         appBar: AppBar(
