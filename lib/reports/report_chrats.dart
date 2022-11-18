@@ -22,13 +22,13 @@ class BarChart extends StatelessWidget {
         series: <BarSeries<ChartData, String>>[
           // Renders bar chart
           BarSeries<ChartData, String>(
-              dataSource: dataList,
-              xValueMapper: (ChartData data, _) => data.x,
-              yValueMapper: (ChartData data, _) => data.y,
-              width: 0.5,
-              borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(20), topLeft: Radius.circular(20)),
-              pointColorMapper: (datum, index) {
+            dataSource: dataList,
+            xValueMapper: (ChartData data, _) => data.x,
+            yValueMapper: (ChartData data, _) => data.y,
+            width: 0.5,
+            borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+            pointColorMapper: (datum, index) {
               if (datum.x == 'فول') {
                 return Colors.brown;
               }
@@ -37,7 +37,7 @@ class BarChart extends StatelessWidget {
               }
               return null;
             },
-              )
+          )
         ]);
   }
 }
@@ -58,7 +58,9 @@ class PieChart extends StatelessWidget {
           xValueMapper: (ChartData data, index) => data.x,
           yValueMapper: (ChartData data, index) => data.y,
 
-          dataLabelSettings: const DataLabelSettings(isVisible: true,),
+          dataLabelSettings: const DataLabelSettings(
+            isVisible: true,
+          ),
           // Color the segmments depending on the value. If no color is provided it will be auto generated.
           pointColorMapper: (ChartData datum, index) {
             if (datum.x == 'فول') {
@@ -74,7 +76,6 @@ class PieChart extends StatelessWidget {
           // Index i segment will be exploded on initial rendering
           // explodeIndex: 0,
           // Radius for each segment from data source
-          
         )
       ],
     );
@@ -93,26 +94,44 @@ class DoughnutChart extends StatelessWidget {
       tooltipBehavior: TooltipBehavior(enable: true, duration: 1),
       series: <CircularSeries>[
         DoughnutSeries<ChartData, String>(
-          dataSource: dataList,
-          xValueMapper: (datum, index) => datum.x,
-          yValueMapper: (datum, index) => datum.y,
-
-          dataLabelSettings: const DataLabelSettings(isVisible: true,),
-          // Color the segmments depending on the value. If no color is provided it will be auto generated.
-          pointColorMapper: (ChartData datum, index) {
-            if (datum.x == 'فول') {
-              return Colors.brown;
-            }
-            if (datum.x == 'لن أفطر معكم') {
-              return Colors.indigo;
-            }
-            return null;
-          },
-          explode: true,
-          innerRadius: '60%',
-          cornerStyle: CornerStyle.endCurve
-        )
+            dataSource: dataList,
+            xValueMapper: (datum, index) => datum.x,
+            yValueMapper: (datum, index) => datum.y,
+            dataLabelSettings: const DataLabelSettings(
+              isVisible: true,
+            ),
+            // Color the segmments depending on the value. If no color is provided it will be auto generated.
+            pointColorMapper: (ChartData datum, index) {
+              if (datum.x == 'فول') {
+                return Colors.brown;
+              }
+              if (datum.x == 'لن أفطر معكم') {
+                return Colors.indigo;
+              }
+              return null;
+            },
+            explode: true,
+            innerRadius: '60%',
+            cornerStyle: CornerStyle.endCurve)
       ],
     );
+  }
+}
+//*///////////// Generic CHART /////////////////////////////////////////////////////
+/// A widget that accepts the chart type as a string parameter and returns a certain
+/// Chart depending on that string.
+
+class GenericChart extends StatelessWidget {
+  final List<ChartData> dataList;
+  final String type;
+  const GenericChart({super.key, required this.type, required this.dataList});
+
+  @override
+  Widget build(BuildContext context) {
+    return type == 'Pie'
+        ? PieChart(dataList: dataList)
+        : (type == 'Doughnut'
+            ? DoughnutChart(dataList: dataList)
+            : BarChart(dataList: dataList));
   }
 }

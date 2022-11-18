@@ -48,7 +48,7 @@ class DatabaseService {
   Future updateUserOrderData(String food, String name, int strength) async {
     // change the displayname of fb authentication user
     await FirebaseAuth.instance.currentUser!.updateDisplayName(name);
-    
+
     await usersAuthCollection
         .doc(uid)
         .set({'name': name}, SetOptions(merge: true));
@@ -58,7 +58,7 @@ class DatabaseService {
   }
 
   /// create a data list from snapshot
-  List<Data> _dataListFromSnapShot(QuerySnapshot snapshot) {
+  static List<Data> _dataListFromSnapShot(QuerySnapshot snapshot) {
     return snapshot.docs.map((adoc) {
       var docData = adoc.data() as Map;
       return Data(
@@ -71,7 +71,7 @@ class DatabaseService {
   }
 
   /// get data stream from a collection
-  Stream<List<Data>> get document {
+  static Stream<List<Data>> get document {
     return collection.snapshots().map(_dataListFromSnapShot);
   }
 
@@ -108,4 +108,63 @@ class DatabaseService {
           plugin: e.plugin, code: e.code, message: e.message);
     }
   }
+
+  //*/ Reports Streams ///////////////////////////////////////////////////:
+
+  Future<String> futureTask() async {
+    List statistics = ['888'];
+
+    await FirebaseFirestore.instance
+        .collection('m_coll')
+        .snapshots()
+        .forEach((subcollSnap) {
+      for (var doc in subcollSnap.docs) {
+        statistics.add(doc.id);
+      }
+    });
+    print(statistics.toString());
+    return statistics.toString();
+  }
+
+  Stream<String> get stats async* {
+    List foods = ['فول', 'غير الفول', 'لن أفطر معكم'];
+
+    // int i = 0;
+    // while (true) {
+    //   await Future.delayed(const Duration(seconds: 1), () => i++,);
+
+    // yield i;
+    // }
+
+    List statistics = ['888'];
+    while (true) {
+
+      print(statistics.toString());
+      await FirebaseFirestore.instance
+          .collection('m_coll')
+          .snapshots()
+          .forEach((subcollSnap) {
+        for (var doc in subcollSnap.docs) {
+          statistics.add(doc.id);
+        }
+      });
+      yield statistics.toString();
+    }
+  }
+}
+
+testing() async {
+  CollectionReference coll = FirebaseFirestore.instance.collection('m_coll');
+
+  print('before await');
+  String x = await coll.id;
+  print('length : $x');
+  print('after await');
+  await coll.snapshots().forEach(
+    (snap) {
+      for (var doc in snap.docs) {
+        print(doc.id);
+      }
+    },
+  );
 }

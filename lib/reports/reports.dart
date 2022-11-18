@@ -1,49 +1,56 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iftar/data.dart';
 import 'package:iftar/reports/report_chrats.dart';
 import 'package:iftar/services/database.dart';
 import 'package:provider/provider.dart';
 
-
 //*//////////////// FUNCTIONS: /////////////////////////////////////////////////
 int countFoodOrders(String type, List<Data> data) {
-    int count = 0;
-    for (var user in data) {
-      if (user.food == type) {
-        count++;
-      }
+  int count = 0;
+  for (var user in data) {
+    if (user.food == type) {
+      count++;
     }
-    return count;
   }
-//*//////////////// CLASSES: ///////////////////////////////////////////////////
+  return count;
+}
+//*//////////////// ReportScreen: ///////////////////////////////////////////////////
 
 class ReportScreen extends StatefulWidget {
-  
-  const ReportScreen({super.key});
+  const ReportScreen({
+    super.key,
+  });
 
   @override
   State<ReportScreen> createState() => _ReportScreenState();
 }
 
 class _ReportScreenState extends State<ReportScreen> {
-
   String chartType = 'Bar';
   Widget? choosenChart;
+  bool check = false;
 
+  /// Helps in avoiding declaring build as async.
+  void delay() async {
+    await Future.delayed(const Duration(seconds: 2));
+  }
+
+  String chartType = 'Pie';
   @override
   Widget build(BuildContext context) {
+    
 
     return StreamProvider<List<Data>>.value(
       initialData: const [],
       value: DatabaseService().document,
-      builder:(icontext, child) {
-        List<ChartData> chartDataList = [];
-        final data = Provider.of<List<Data>>(icontext);
+      builder:(context, child) {
+        List<ChartData> chartData = [];
+        final data = Provider.of<List<Data>>(context);
         for (var e in ['فول', 'غير الفول', 'لن أفطر معكم']) {
-          chartDataList.add(ChartData(e, countFoodOrders(e, data)));
+          chartData.add(ChartData(e, countFoodOrders(e, data)));
         }
-        print(chartDataList.first.y);
-        choosenChart ??= BarChart(dataList: chartDataList);//BarChart(dataList: chartDataList); // If ?? is not used Barchart will be assigned to choosenChart at every build call and the chart will never change.
+
         return Scaffold(
         appBar: AppBar(
           title: const Text('صفحة التقارير'),
@@ -64,22 +71,7 @@ class _ReportScreenState extends State<ReportScreen> {
                         return DropdownMenuItem(value: e,child: Text('$e Chart'),);
                       }).toList(),
                       onChanged: (value) {
-                        switch (value) {
-                          case 'Bar':
-                            chartType = 'Bar'; //Necessary to change the value of the dropdownbutton. 
-                            choosenChart = BarChart(dataList: chartDataList);
-                            break;
-                          case 'Pie':
-                            chartType = 'Pie';
-                            choosenChart = PieChart(dataList: chartDataList);
-                            break;
-                          case 'Doughnut':
-                            chartType = 'Doughnut';
-                            choosenChart = DoughnutChart(dataList: chartDataList);
-                            break;
-                          default:
-                        }
-                        setState(() {});
+                        setState(() {chartType = value!;});
                       },
                         ),
                     const Text('اختر شكل عرض البيانات:   ', textDirection: TextDirection.rtl,)
@@ -88,7 +80,11 @@ class _ReportScreenState extends State<ReportScreen> {
                 const SizedBox(height: 70,),
                 Flexible(
                   flex: 3,
-                  child: choosenChart!
+                  child: chartType == 'Bar'
+                          ? BarChart(dataList: chartData)
+                          : (chartType == 'Pie'
+                              ? PieChart(dataList: chartData)
+                              : DoughnutChart(dataList: chartData)),
                 ),
               ],
             )
@@ -101,14 +97,10 @@ class _ReportScreenState extends State<ReportScreen> {
 }
 
 // The data source
-// final List<ChartData> chartDataList = [
+// final List<ChartData> chartData = [
 //   ChartData('فول', 35),
 //   ChartData('غيره', 28),
 //   ChartData('لن أفطر', 34),
 // ];
 
-// chartType == 'Bar'
-//                           ? BarChart(dataList: chartDataList)
-//                           : (chartType == 'Pie'
-//                               ? PieChart(dataList: chartDataList)
-//                               : DoughnutChart(dataList: chartDataList)),
+

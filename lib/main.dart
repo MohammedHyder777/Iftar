@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iftar/reports/reports.dart';
 import 'package:iftar/screens/wrapper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:iftar/services/auth.dart';
@@ -22,7 +23,10 @@ class MyApp extends StatelessWidget {
       value: AuthService().user,
       initialData: null,
       child: MaterialApp(
-          home: const Wrapper(),
+          routes: {
+            '/': (context) => const Wrapper(),
+            'reports_screen':(context) => const ReportScreen()
+          },
           theme: ThemeData(
             primarySwatch: Colors.indigo,
 
