@@ -305,7 +305,7 @@ class _HomeState extends State<Home> {
                 if (val == '3') {
                   // createPdfReport();
                   if(mounted){
-                    Navigator.pushNamed(context, 'reports_screen');
+                    Navigator.pushNamed(context, 'reports_screen', arguments:  'Pie');
                   }
                 }
                 if (val == '4') {

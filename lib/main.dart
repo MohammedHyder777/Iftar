@@ -29,7 +29,6 @@ class MyApp extends StatelessWidget {
           },
           theme: ThemeData(
             primarySwatch: Colors.indigo,
-
             outlinedButtonTheme: OutlinedButtonThemeData(
               style: ButtonStyle(
                 padding: MaterialStateProperty.all(const EdgeInsets.all(11)),

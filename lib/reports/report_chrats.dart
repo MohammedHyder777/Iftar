@@ -9,16 +9,16 @@ class ChartData {
 
 //*///////////// BAR CHART /////////////////////////////////////////////////////
 class BarChart extends StatelessWidget {
-  const BarChart({super.key, required this.dataList});
+  const BarChart({super.key, required this.dataList, this.yAxisTitleText});
   final List<ChartData> dataList;
+  final String? yAxisTitleText;
   @override
   Widget build(BuildContext context) {
     return SfCartesianChart(
         isTransposed: true,
-        primaryXAxis: CategoryAxis(labelRotation: -30),
-        primaryYAxis: NumericAxis(
-          interval: 1,
-        ),
+        primaryXAxis: CategoryAxis(labelRotation: -20), // In degrees
+        primaryYAxis: NumericAxis(title: AxisTitle(text: yAxisTitleText),),
+        tooltipBehavior: TooltipBehavior(enable: true, duration: 1),
         series: <BarSeries<ChartData, String>>[
           // Renders bar chart
           BarSeries<ChartData, String>(
@@ -27,7 +27,7 @@ class BarChart extends StatelessWidget {
             yValueMapper: (ChartData data, _) => data.y,
             width: 0.5,
             borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+                topRight: Radius.circular(30), topLeft: Radius.circular(30)),
             pointColorMapper: (datum, index) {
               if (datum.x == 'فول') {
                 return Colors.brown;
@@ -50,7 +50,7 @@ class PieChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SfCircularChart(
-      legend: Legend(isVisible: true),
+      legend: Legend(isVisible: true, position: LegendPosition.top),
       tooltipBehavior: TooltipBehavior(enable: true, duration: 1),
       series: <CircularSeries>[
         PieSeries<ChartData, String>(
@@ -90,7 +90,7 @@ class DoughnutChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SfCircularChart(
-      legend: Legend(isVisible: true),
+      legend: Legend(isVisible: true, position: LegendPosition.top),
       tooltipBehavior: TooltipBehavior(enable: true, duration: 1),
       series: <CircularSeries>[
         DoughnutSeries<ChartData, String>(
@@ -112,7 +112,8 @@ class DoughnutChart extends StatelessWidget {
             },
             explode: true,
             innerRadius: '60%',
-            cornerStyle: CornerStyle.endCurve)
+            cornerStyle: CornerStyle.endCurve,
+          )
       ],
     );
   }
