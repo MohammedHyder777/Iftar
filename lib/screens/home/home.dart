@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:iftar/data.dart';
+import 'package:iftar/screens/home/sidenav_drawer.dart';
 import 'package:iftar/screens/home/statistics_card.dart';
 import 'package:iftar/screens/home/data_list.dart';
 import 'package:iftar/screens/home/preferences_form.dart';
@@ -13,15 +14,15 @@ import 'package:provider/provider.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 int countFoodOrders(String type, BuildContext mycontext) {
-    final data = Provider.of<List<Data>>(mycontext);
-    int count = 0;
-    for (var user in data) {
-      if (user.food == type) {
-        count++;
-      }
+  final data = Provider.of<List<Data>>(mycontext);
+  int count = 0;
+  for (var user in data) {
+    if (user.food == type) {
+      count++;
     }
-    return count;
   }
+  return count;
+}
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -34,158 +35,10 @@ class _HomeState extends State<Home> {
   final AuthService _authService = AuthService();
   String currentCriteria = 'food';
 
-
   @override
   Widget build(BuildContext context) {
     final IUser? user = Provider.of<IUser?>(context);
     DatabaseService dbService = DatabaseService(user!.uid);
-
-    /// Show Preferences //////////////////////////////////
-    void showPreferences() {
-      showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: const PreferencesForm(),
-          );
-        },
-      );
-    }
-
-    ////////////////////////////////////////////////////////
-
-    /// Delete order confirmation messege
-    void viewDeleteOrderConfirm() {
-      showDialog(
-        barrierColor: const Color.fromARGB(171, 230, 118, 118),
-        context: context,
-        builder: (context) => AlertDialog(
-            icon: const Icon(
-              Icons.warning_rounded,
-              color: Colors.red,
-              size: 70,
-            ),
-            content: const Text(
-              'أترغب في إلغاء هذا الطلب؟',
-              textDirection: TextDirection.rtl,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20),
-            ),
-            actionsAlignment: MainAxisAlignment.spaceEvenly,
-            actions: [
-              ElevatedButton.icon(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.close),
-                label: const Text('تراجع'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.indigo),
-                  foregroundColor: MaterialStateProperty.all(Colors.white),
-                  padding: MaterialStateProperty.all(
-                      const EdgeInsets.symmetric(horizontal: 11, vertical: 8)),
-                ),
-              ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  try {
-                    dbService.deleteOrder(user.uid);
-                    // _authService.signOut();
-                  } on FirebaseException catch (e) {
-                    throw Exception();
-                  }
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.delete),
-                label: const Text('تأكيد'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.red),
-                  foregroundColor: MaterialStateProperty.all(Colors.white),
-                  padding: MaterialStateProperty.all(
-                      const EdgeInsets.symmetric(horizontal: 11, vertical: 8)),
-                ),
-              ),
-            ]),
-      );
-    }
-    //////////////////////////////////////////
-
-    /// Delete account confirmation messege
-    void viewDeleteConfirm() {
-      showDialog(
-        barrierColor: const Color.fromARGB(171, 230, 118, 118),
-        context: context,
-        builder: (context) => AlertDialog(
-            icon: const Icon(
-              Icons.warning_rounded,
-              color: Colors.red,
-              size: 70,
-            ),
-            content: const Text(
-              'أتدرك أنك بالموافقة ستفقد حسابك وجميع بياناتك؟',
-              textDirection: TextDirection.rtl,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20),
-            ),
-            actionsAlignment: MainAxisAlignment.spaceEvenly,
-            actions: [
-              ElevatedButton.icon(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.close),
-                label: const Text('إلغاء'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.indigo),
-                  foregroundColor: MaterialStateProperty.all(Colors.white),
-                  padding: MaterialStateProperty.all(
-                      const EdgeInsets.symmetric(horizontal: 11, vertical: 8)),
-                ),
-              ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  try {
-                    _authService.deleteUserAccount();
-                    // _authService.signOut();  // After account deletion the user will be auto logged out.
-                  } on FirebaseException catch (e) {
-                    throw Exception();
-                  }
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.delete_forever),
-                label: const Text('تأكيد'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.red),
-                  foregroundColor: MaterialStateProperty.all(Colors.white),
-                  padding: MaterialStateProperty.all(
-                      const EdgeInsets.symmetric(horizontal: 11, vertical: 8)),
-                ),
-              ),
-            ]),
-      );
-    }
-    ////////////////////////////////////////////////////////////////////////////
-
-    /// create PDF :
-    void createPdfReport() {
-      showDialog(
-        context: context,
-        builder: (context) => const AlertDialog(
-          icon: Icon(
-            Icons.insert_drive_file,
-            size: 30,
-            color: Colors.indigo,
-          ),
-          content: Text(
-            'قريبا ... إن شاء الله',
-            textDirection: TextDirection.rtl,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 20,
-              color: Colors.indigo,
-            ),
-          ),
-        ),
-      );
-    }
-    ////////////////////////////////////////////////////////////////////////////
 
     return StreamProvider<List<Data>>.value(
       initialData: const [],
@@ -292,11 +145,11 @@ class _HomeState extends State<Home> {
               onChanged: (val) async {
                 if (val == '1') {
                   if (await DatabaseService.hasData(user.uid)) {
-                    showPreferences();
+                    showPreferences(context);
                   } else {
                     dbService.updateUserOrderData(
                         'لن أفطر معكم', user.name, 300);
-                    showPreferences();
+                    showPreferences(context);
                   }
                 }
                 if (val == '2') {
@@ -304,27 +157,35 @@ class _HomeState extends State<Home> {
                 }
                 if (val == '3') {
                   // createPdfReport();
-                  if(mounted){
-                    Navigator.pushNamed(context, 'reports_screen', arguments:  'Pie');
+                  if (mounted) {
+                    Navigator.pushNamed(context, 'reports_screen',
+                        arguments: 'Pie');
                   }
                 }
                 if (val == '4') {
-                  viewDeleteOrderConfirm();
+                  if (mounted) {
+                    viewDeleteOrderConfirm(context, user);
+                  }
                 }
                 if (val == '5') {
-                  viewDeleteConfirm();
+                  if (mounted) {
+                    viewDeleteConfirm(context);
+                  }
                 }
               },
             ),
           ],
         ),
+        endDrawer: SideNavDrawer(iuser: user),
         body: Container(
           decoration: const BoxDecoration(
               image: DecorationImage(
                   image: AssetImage('assets/logo.jpg'),
                   fit: BoxFit.contain,
                   opacity: 0.5)),
-          child: DataList(sortCriteria: currentCriteria,),
+          child: DataList(
+            sortCriteria: currentCriteria,
+          ),
         ),
         floatingActionButton: SpeedDial(
           spaceBetweenChildren: 14,

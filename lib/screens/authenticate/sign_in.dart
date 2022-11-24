@@ -51,7 +51,7 @@ class _SignInState extends State<SignIn> {
             // color: Colors.white70,
             child: Form(
               key: _formKey,
-              child: Column(
+              child: ListView(
                 children: [
                   const SizedBox(
                     height: 20,
@@ -81,15 +81,17 @@ class _SignInState extends State<SignIn> {
                   SizedBox(
                     height: (error.isEmpty) ? 0 : 20,
                   ),
-                  (error.isEmpty)
-                      ? const SizedBox(
-                          height: 0,
-                        )
-                      : Text(
-                          error,
-                          style:
-                              const TextStyle(color: Colors.red, fontSize: 12),
-                        ),
+                  Center(
+                    child: (error.isEmpty)
+                        ? const SizedBox(
+                            height: 0,
+                          )
+                        : Text(
+                            error,
+                            style:
+                                const TextStyle(color: Colors.red, fontSize: 12),
+                          ),
+                  ),
                   const SizedBox(
                     height: 20,
                   ),

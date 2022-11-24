@@ -158,7 +158,12 @@ class AuthService {
     }
 
     // Delete user auth from firebase auth:
+
+    try {
     await _firebaseAuth.currentUser!.delete();
+    } on FirebaseException catch (e) {
+      print('Cannot delete.');
+    }
   }
 
 }

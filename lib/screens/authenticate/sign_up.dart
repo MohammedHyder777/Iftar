@@ -51,7 +51,7 @@ class _SignUpState extends State<SignUp> {
           // color: Colors.white70,
           child: Form(
             key: _formKey,
-            child: Column(
+            child: ListView(
               children: [
                 const SizedBox(height: 20,),
                 TextFormField(
@@ -86,45 +86,49 @@ class _SignUpState extends State<SignUp> {
                   },
                 ),
                 (error.isEmpty)? const SizedBox(height: 0,) : const SizedBox(height: 20,),
-                (error.isEmpty)? const SizedBox(height: 0,) : Text(
-                  error,
-                  style: const TextStyle(color: Colors.red, fontSize: 12),
+                Center(
+                  child: (error.isEmpty)? const SizedBox(height: 0,) : Text(
+                    error,
+                    style: const TextStyle(color: Colors.red, fontSize: 12),
+                  ),
                 ),
                 const SizedBox(height: 20,),
-                signing? const Loading() : ElevatedButton(
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()){
-                        setState(() => signing = true);
-                        try{
-                                await _authService.signUpWithEmail(name, email, password);
-                        } on FirebaseAuthException catch (e) {
-                          print('*************\n${e.code}\n***********');
-                          String specialError = '';
-                                if (e.code == 'email-already-in-use'){
-                                  specialError = 'هذا البريد مربوط بحساب في التطبيق';
-                                } else if (e.code == 'invalid-email') {
-                                  specialError = 'أدخل بريدا إلكترونيا صحيحا';
-                                } else if(e.code == 'weak-password'){
-                                  specialError = 'كلمة سر ضعيفة، قوّها يزيادة طولها';
-                                }
-                          setState(() {
-                            error = (specialError.isNotEmpty)
-                                      ? specialError
-                                      : 'عذرا لم ينجح إنشاء حسابك';
-                            signing = false;
-                          });
+                signing? const Loading() : Align( //If you want the default size of the Button inside ListView just add the Align widget as parent
+                  child: ElevatedButton(
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()){
+                          setState(() => signing = true);
+                          try{
+                                  await _authService.signUpWithEmail(name, email, password);
+                          } on FirebaseAuthException catch (e) {
+                            print('*************\n${e.code}\n***********');
+                            String specialError = '';
+                                  if (e.code == 'email-already-in-use'){
+                                    specialError = 'هذا البريد مربوط بحساب في التطبيق';
+                                  } else if (e.code == 'invalid-email') {
+                                    specialError = 'أدخل بريدا إلكترونيا صحيحا';
+                                  } else if(e.code == 'weak-password'){
+                                    specialError = 'كلمة سر ضعيفة، قوّها يزيادة طولها';
+                                  }
+                            setState(() {
+                              error = (specialError.isNotEmpty)
+                                        ? specialError
+                                        : 'عذرا لم ينجح إنشاء حسابك';
+                              signing = false;
+                            });
+                          }
+                          
                         }
-                        
-                      }
-                    },
-                    // style: ButtonStyle(),
-                    child: const Text(
-                      'أنشئ حسابك',
-                      style: TextStyle(
-                        color: Colors.white70,
+                      },
+                      // style: ButtonStyle(),
+                      child: const Text(
+                        'أنشئ حسابك',
+                        style: TextStyle(
+                          color: Colors.white70,
+                        ),
                       ),
                     ),
-                  )
+                )
               ],
             ),
           )

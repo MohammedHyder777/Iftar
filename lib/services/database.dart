@@ -12,7 +12,7 @@ class DatabaseService {
 
   final CollectionReference usersAuthCollection =
       FirebaseFirestore.instance.collection('users_auth_coll');
-
+  
   /// Add the user to the users_auth_coll:
   void addUserToDB(IUser iuser) async {
     await usersAuthCollection
@@ -111,39 +111,12 @@ class DatabaseService {
 
   //*/ Reports Streams ///////////////////////////////////////////////////:
 
-  
-  Stream<String> get stats async* {
-    List foods = ['فول', 'غير الفول', 'لن أفطر معكم'];
-
-    // int i = 0;
-    // while (true) {
-    //   await Future.delayed(const Duration(seconds: 1), () => i++,);
-
-    // yield i;
-    // }
-
-    List statistics = ['888'];
-    while (true) {
-
-      print(statistics.toString());
-      await FirebaseFirestore.instance
-          .collection('m_coll')
-          .snapshots()
-          .forEach((subcollSnap) {
-        for (var doc in subcollSnap.docs) {
-          statistics.add(doc.id);
-        }
-      });
-      yield statistics.toString();
-    }
-  }
-
-  Stream<Map<String, int>> get testing {
+  Stream<Map<String, int>> get glossaryStats {
   return FirebaseFirestore.instance.collectionGroup('orders').snapshots().map(getStatsFromSnapshot);
   }
 
- Map<String, int> getStatsFromSnapshot(snap) {
-    List foods = ['فول', 'غير الفول', 'لن أفطر معكم'];
+  /// Returns a map {'food' : int count} extracted from a snapshot.
+  Map<String, int> getStatsFromSnapshot(snap) {
     int fcount = 0;
     int notfcount = 0;
     int fastcount = 0;

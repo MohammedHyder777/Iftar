@@ -36,7 +36,7 @@ class _ReportScreenState extends State<ReportScreen> {
 
     return MultiProvider(
       providers: [
-        StreamProvider<Map>.value(initialData: const {}, value: DatabaseService().testing,),
+        StreamProvider<Map>.value(initialData: const {}, value: DatabaseService().glossaryStats,),
         StreamProvider<List<Data>>.value(initialData: const [], value: DatabaseService.document,),
         ],
       builder:(context, child) {
@@ -59,7 +59,7 @@ class _ReportScreenState extends State<ReportScreen> {
 
         return Scaffold(
         appBar: AppBar(
-          title: const Text('صفحة التقارير'),
+          title: const Text('شاشة التقارير'),
         ),
         body: Padding(
           padding: const EdgeInsets.fromLTRB(18.0,22.0,18.0,36.0),
