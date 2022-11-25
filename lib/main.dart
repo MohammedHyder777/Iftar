@@ -25,29 +25,28 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
           routes: {
             '/': (context) => const Wrapper(),
-            'reports_screen':(context) => const ReportScreen()
+            'reports_screen': (context) => const ReportScreen()
           },
           theme: ThemeData(
-            primarySwatch: Colors.indigo,
-            outlinedButtonTheme: OutlinedButtonThemeData(
-              style: ButtonStyle(
-                padding: MaterialStateProperty.all(const EdgeInsets.all(11)),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
+              primarySwatch: Colors.indigo,
+              outlinedButtonTheme: OutlinedButtonThemeData(
+                style: ButtonStyle(
+                  padding: MaterialStateProperty.all(const EdgeInsets.all(11)),
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)),
+                  ),
                 ),
               ),
-          ),
-
-            elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ButtonStyle(
-                padding: MaterialStateProperty.all(const EdgeInsets.all(11)),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
+              elevatedButtonTheme: ElevatedButtonThemeData(
+                style: ButtonStyle(
+                  padding: MaterialStateProperty.all(const EdgeInsets.all(11)),
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)),
+                  ),
                 ),
-              ),
-          )),
-    ));
+              )),
+        ));
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iftar/data.dart';
+import 'package:iftar/screens/home/sidenav_drawer.dart';
+import 'package:iftar/services/database.dart';
 import 'package:iftar/user.dart';
 import 'package:provider/provider.dart';
 
@@ -11,6 +13,7 @@ class DataTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final iuser = Provider.of<IUser>(context);
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: Container(
@@ -36,6 +39,20 @@ class DataTile extends StatelessWidget {
           title: Text(data.name, style: const TextStyle(color: Colors.white)),
           subtitle:
               Text(data.food, style: const TextStyle(color: Colors.white)),
+          trailing: !isThisUser? null : GestureDetector(
+            child: const Padding(
+              padding: EdgeInsets.only(right: 15),
+              child: Icon(Icons.edit, size: 22, color: Colors.white,),
+            ),
+            onTap: () async {
+                  if (await DatabaseService.hasData(iuser.uid)) {
+                    showPreferences(context);
+                  } else {
+                    DatabaseService(iuser.uid).updateUserOrderData('لن أفطر معكم', iuser.name, 300);
+                    showPreferences(context);
+                  }
+                },
+          ),
         ),
       ),
     );

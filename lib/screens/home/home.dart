@@ -1,12 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:iftar/data.dart';
 import 'package:iftar/screens/home/sidenav_drawer.dart';
 import 'package:iftar/screens/home/statistics_card.dart';
 import 'package:iftar/screens/home/data_list.dart';
-import 'package:iftar/screens/home/preferences_form.dart';
 import 'package:iftar/services/auth.dart';
 import 'package:iftar/services/database.dart';
 import 'package:iftar/user.dart';
@@ -113,30 +109,8 @@ class _HomeState extends State<Home> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(Icons.print_rounded, color: Colors.indigo[800]),
-                      Text('اعرض تقريرا',
-                          style: TextStyle(color: Colors.indigo[800])),
-                    ],
-                  ),
-                ),
-                DropdownMenuItem(
-                  value: '4',
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
                       Icon(Icons.delete, color: Colors.indigo[800]),
                       Text('احذف الطلب',
-                          style: TextStyle(color: Colors.indigo[800])),
-                    ],
-                  ),
-                ),
-                DropdownMenuItem(
-                  value: '5',
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Icon(Icons.delete_forever, color: Colors.red[800]),
-                      Text('احذف الحساب',
                           style: TextStyle(color: Colors.indigo[800])),
                     ],
                   ),
@@ -156,27 +130,15 @@ class _HomeState extends State<Home> {
                   _authService.signOut();
                 }
                 if (val == '3') {
-                  // createPdfReport();
-                  if (mounted) {
-                    Navigator.pushNamed(context, 'reports_screen',
-                        arguments: 'Pie');
-                  }
-                }
-                if (val == '4') {
                   if (mounted) {
                     viewDeleteOrderConfirm(context, user);
-                  }
-                }
-                if (val == '5') {
-                  if (mounted) {
-                    viewDeleteConfirm(context);
                   }
                 }
               },
             ),
           ],
         ),
-        endDrawer: SideNavDrawer(iuser: user),
+        endDrawer: Directionality(textDirection: TextDirection.rtl ,child: SideNavDrawer(iuser: user)),
         body: Container(
           decoration: const BoxDecoration(
               image: DecorationImage(

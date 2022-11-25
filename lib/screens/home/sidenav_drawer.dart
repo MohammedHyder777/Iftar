@@ -6,11 +6,19 @@ import 'package:iftar/services/database.dart';
 import '../../services/auth.dart';
 
 class SideNavDrawer extends StatelessWidget {
-  const SideNavDrawer({super.key, required this.iuser});
+  SideNavDrawer({super.key, required this.iuser});
   final IUser iuser;
+
+  bool hasOrder = true;
+
+  void setHasOrder() async {
+    hasOrder = await DatabaseService.hasData(iuser.uid);
+  }
 
   @override
   Widget build(BuildContext context) {
+    setHasOrder();
+
     return Drawer(
       child: ListView(
         children: [
@@ -21,39 +29,56 @@ class SideNavDrawer extends StatelessWidget {
                     image: AssetImage('assets/logo.jpg'), fit: BoxFit.cover)),
             child: SizedBox(),
           ),
-          ListTile(
-            leading: Icon(Icons.tune, color: Colors.indigo[800]),
-            title:
-                Text('عدل الطلب', style: TextStyle(color: Colors.indigo[800])),
-            onTap: () async {
-              if (await DatabaseService.hasData(iuser.uid)) {
-                Navigator.of(context).pop();
-                showPreferences(context);
-              } else {
-                Navigator.of(context).pop();
-                DatabaseService(iuser.uid).updateUserOrderData('لن أفطر معكم', iuser.name, 300);
-                showPreferences(context);
-              }
-            },
-          ),
           ExpansionTile(
-            leading: Icon(Icons.print_rounded, color: Colors.indigo[800]),
-            title: Text('اعرض تقريرا',
-                style: TextStyle(color: Colors.indigo[800])),
+            childrenPadding: const EdgeInsets.only(right: 15),
+            leading: Icon(Icons.set_meal, color: Colors.indigo[800]),
+            title: Text('أدر طلباتك', style: TextStyle(color: Colors.indigo[800], fontSize: 18, fontWeight: FontWeight.bold)),
             children: [
               ListTile(
+                leading: Icon(Icons.tune, color: Colors.indigo[800]),
+                title:
+                    Text(hasOrder? 'عدل الطلب' : 'اطلب', style: TextStyle(color: Colors.indigo[800])),
+                onTap: () async {
+                  if (await DatabaseService.hasData(iuser.uid)) {
+                    Navigator.of(context).pop();
+                    showPreferences(context);
+                  } else {
+                    Navigator.of(context).pop();
+                    DatabaseService(iuser.uid).updateUserOrderData('لن أفطر معكم', iuser.name, 300);
+                    showPreferences(context);
+                  }
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.delete, color: Colors.indigo[800]),
+                title:
+                    Text('احذف الطلب', style: TextStyle(color: Colors.indigo[800])),
+                onTap: () => viewDeleteOrderConfirm(context, iuser),
+              )
+            ],
+          ),
+          ExpansionTile(
+            childrenPadding: const EdgeInsets.only(right: 15),
+            leading: Icon(Icons.stacked_bar_chart, color: Colors.indigo[800]),
+            title: Text('اعرض تقريرا',
+                style: TextStyle(color: Colors.indigo[800], fontSize: 18, fontWeight: FontWeight.bold)),
+            children: [
+              ListTile(
+                leading: Icon(Icons.bar_chart, color: Colors.indigo[800]),
                 title: Text('في شكل أشرطة بيانية', style: TextStyle(color: Colors.indigo[800])),
                 onTap: () {
                   Navigator.pushNamed(context, 'reports_screen', arguments: 'Bar');
                 },
               ),
               ListTile(
+                leading: Icon(Icons.pie_chart, color: Colors.indigo[800]),
                 title: Text('في شكل دائري', style: TextStyle(color: Colors.indigo[800])),
                 onTap: () {
                   Navigator.pushNamed(context, 'reports_screen', arguments: 'Pie');
                 },
               ),
               ListTile(
+                leading: Icon(Icons.donut_large_rounded, color: Colors.indigo[800]),
                 title: Text('في شكل حلقي', style: TextStyle(color: Colors.indigo[800])),
                 onTap: () {
                   Navigator.pushNamed(context, 'reports_screen', arguments: 'Doughnut');
@@ -62,8 +87,9 @@ class SideNavDrawer extends StatelessWidget {
             ],
           ),
           ExpansionTile(
+            childrenPadding: const EdgeInsets.only(right: 15),
             leading: Icon(Icons.account_box, color: Colors.indigo[800]),
-            title: Text('معلومات الحساب', style: TextStyle(color: Colors.indigo[800])),
+            title: Text('معلومات الحساب', style: TextStyle(color: Colors.indigo[800], fontSize: 18, fontWeight: FontWeight.bold)),
             children: [
               ListTile(
                 leading: Icon(Icons.delete_forever, color: Colors.red[800]),
