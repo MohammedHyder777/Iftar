@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:iftar/data.dart';
 import 'package:iftar/screens/home/sidenav_drawer.dart';
-import 'package:iftar/services/database.dart';
 import 'package:iftar/user.dart';
 import 'package:provider/provider.dart';
 
@@ -10,10 +10,9 @@ class DataTile extends StatelessWidget {
   final bool isThisUser;
   const DataTile({Key? key, required this.data, required this.isThisUser})
       : super(key: key);
-
+  
   @override
   Widget build(BuildContext context) {
-    final iuser = Provider.of<IUser>(context);
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: Container(
@@ -39,22 +38,46 @@ class DataTile extends StatelessWidget {
           title: Text(data.name, style: const TextStyle(color: Colors.white)),
           subtitle:
               Text(data.food, style: const TextStyle(color: Colors.white)),
-          trailing: !isThisUser? null : GestureDetector(
-            child: const Padding(
-              padding: EdgeInsets.only(right: 15),
-              child: Icon(Icons.edit, size: 22, color: Colors.white,),
-            ),
-            onTap: () async {
-                  if (await DatabaseService.hasData(iuser.uid)) {
-                    showPreferences(context);
-                  } else {
-                    DatabaseService(iuser.uid).updateUserOrderData('لن أفطر معكم', iuser.name, 300);
-                    showPreferences(context);
-                  }
-                },
-          ),
+          trailing: !isThisUser
+              ? null
+              : Padding(
+                padding: const EdgeInsets.only(right: 15),
+                child: CurrentUserButtons(iuser: Provider.of<IUser>(context)),
+              )
         ),
       ),
+    );
+  }
+}
+
+//*///////////////////////////////////////////////////////////////////////
+class CurrentUserButtons extends StatelessWidget {
+  const CurrentUserButtons({super.key, required this.iuser});
+  final IUser iuser;
+  @override
+  Widget build(BuildContext context) {
+    
+    return SpeedDial(
+      elevation: 0,
+      backgroundColor: Colors.indigo[100],
+      foregroundColor: Colors.indigo[800],
+      icon: Icons.edit,
+      activeIcon: Icons.close,
+      buttonSize: const Size(33.0, 33.0),
+      childrenButtonSize: const Size(45.0, 45.0),
+      direction: SpeedDialDirection.left,
+      closeDialOnPop: true,
+      overlayOpacity: 0.2, // = no overlay. This is better than renderOverlay = false which make exceptions and bad UX.
+      children: [
+        SpeedDialChild(
+          child: const Icon(Icons.tune, size: 20, color: Colors.indigo,),
+          onTap: () => showPreferences(context),
+        ),
+        SpeedDialChild(
+          child: const Icon(Icons.delete, size: 20, color: Colors.red,),
+          onTap: () => viewDeleteOrderConfirm(context, iuser),
+        ),
+      ],
     );
   }
 }

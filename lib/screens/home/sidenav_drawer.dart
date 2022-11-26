@@ -20,6 +20,7 @@ class SideNavDrawer extends StatelessWidget {
     setHasOrder();
 
     return Drawer(
+      // width: MediaQuery.of(context).size.width * 0.7,
       child: ListView(
         children: [
           const DrawerHeader(
@@ -52,8 +53,10 @@ class SideNavDrawer extends StatelessWidget {
               ListTile(
                 leading: Icon(Icons.delete, color: Colors.indigo[800]),
                 title:
-                    Text('احذف الطلب', style: TextStyle(color: Colors.indigo[800])),
-                onTap: () => viewDeleteOrderConfirm(context, iuser),
+                    Text('ألغ الطلب', style: TextStyle(color: Colors.indigo[800])),
+                onTap: () {
+                  viewDeleteOrderConfirm(context, iuser);
+                },
               )
             ],
           ),
@@ -89,7 +92,7 @@ class SideNavDrawer extends StatelessWidget {
           ExpansionTile(
             childrenPadding: const EdgeInsets.only(right: 15),
             leading: Icon(Icons.account_box, color: Colors.indigo[800]),
-            title: Text('معلومات الحساب', style: TextStyle(color: Colors.indigo[800], fontSize: 18, fontWeight: FontWeight.bold)),
+            title: Text('أدر حسابك', style: TextStyle(color: Colors.indigo[800], fontSize: 18, fontWeight: FontWeight.bold)),
             children: [
               ListTile(
                 leading: Icon(Icons.delete_forever, color: Colors.red[800]),
@@ -100,7 +103,7 @@ class SideNavDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.logout, color: Colors.indigo[800]),
-            title: Text('أشعر بالخروج',
+            title: Text('سجّل الخروج',
                 style: TextStyle(color: Colors.indigo[800])),
             onTap: () => AuthService().signOut(),
           ),
@@ -109,7 +112,6 @@ class SideNavDrawer extends StatelessWidget {
     );
   }
 }
-
 
 /// Show Preferences //////////////////////////////////
     void showPreferences(BuildContext context) {
@@ -192,7 +194,7 @@ class SideNavDrawer extends StatelessWidget {
               size: 70,
             ),
             content: const Text(
-              'أتدرك أنك بالموافقة ستفقد حسابك وجميع بياناتك؟',
+              'أتدرك أنك بالموافقة ستفقد حسابك وطلباتك؟',
               textDirection: TextDirection.rtl,
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 20),

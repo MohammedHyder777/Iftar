@@ -34,12 +34,13 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final IUser? user = Provider.of<IUser?>(context);
-    DatabaseService dbService = DatabaseService(user!.uid);
+    GlobalKey<ScaffoldState> keyToOpenEndDrawer = GlobalKey();
 
     return StreamProvider<List<Data>>.value(
       initialData: const [],
       value: DatabaseService.document,
       builder: (context, child) => Scaffold(
+        key: keyToOpenEndDrawer,
         backgroundColor: Colors.blueGrey[200],
         appBar: AppBar(
           // backgroundColor: Colors.blue,
@@ -56,89 +57,25 @@ class _HomeState extends State<Home> {
                 ),
                 children: [
                   TextSpan(
-                      text: '\n${user.email}\n',
+                      text: '\n${user!.email}\n',
                       style: const TextStyle(fontSize: 10))
                 ]),
             textDirection: TextDirection.rtl,
             textAlign: TextAlign.center,
           ),
           actions: [
-            DropdownButton(
-              underline: const SizedBox(
-                height: 0,
-              ),
-              hint: Row(
-                children: const [
-                  Icon(
-                    Icons.settings,
-                    size: 22,
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Text('خيارات',
-                      style: TextStyle(color: Colors.white, fontSize: 16)),
-                ],
-              ),
-              alignment: AlignmentDirectional.bottomEnd,
-              items: [
-                DropdownMenuItem(
-                  value: '1',
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Icon(Icons.tune, color: Colors.indigo[800]),
-                      Text('عدل الطلب',
-                          style: TextStyle(color: Colors.indigo[800])),
-                    ],
-                  ),
-                ),
-                DropdownMenuItem(
-                  value: '2',
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Icon(Icons.logout, color: Colors.indigo[800]),
-                      Text('أشعر بالخروج',
-                          style: TextStyle(color: Colors.indigo[800])),
-                    ],
-                  ),
-                ),
-                DropdownMenuItem(
-                  value: '3',
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Icon(Icons.delete, color: Colors.indigo[800]),
-                      Text('احذف الطلب',
-                          style: TextStyle(color: Colors.indigo[800])),
-                    ],
-                  ),
-                ),
-              ],
-              onChanged: (val) async {
-                if (val == '1') {
-                  if (await DatabaseService.hasData(user.uid)) {
-                    showPreferences(context);
-                  } else {
-                    dbService.updateUserOrderData(
-                        'لن أفطر معكم', user.name, 300);
-                    showPreferences(context);
-                  }
-                }
-                if (val == '2') {
-                  _authService.signOut();
-                }
-                if (val == '3') {
-                  if (mounted) {
-                    viewDeleteOrderConfirm(context, user);
-                  }
-                }
-              },
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: IconButton(onPressed: () => _authService.signOut(), icon: const Icon(Icons.logout, size: 26,)),
             ),
+            Padding(
+              padding: const EdgeInsets.only(right: 20, bottom: 10),
+              child: IconButton(onPressed: () => keyToOpenEndDrawer.currentState!.openEndDrawer(), icon: const Icon(Icons.menu, size: 26,)),
+            )
           ],
         ),
         endDrawer: Directionality(textDirection: TextDirection.rtl ,child: SideNavDrawer(iuser: user)),
+        extendBodyBehindAppBar: true,
         body: Container(
           decoration: const BoxDecoration(
               image: DecorationImage(
@@ -152,7 +89,7 @@ class _HomeState extends State<Home> {
         floatingActionButton: SpeedDial(
           spaceBetweenChildren: 14,
           spacing: 14,
-          direction: SpeedDialDirection.up,
+          direction: MediaQuery.of(context).orientation == Orientation.portrait? SpeedDialDirection.up : SpeedDialDirection.left,
           activeIcon: Icons.close,
           buttonSize: const Size(70, 70),
           childrenButtonSize: const Size(65, 65),

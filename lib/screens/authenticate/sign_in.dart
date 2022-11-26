@@ -124,7 +124,7 @@ class _SignInState extends State<SignIn> {
                           },
                           // style: ButtonStyle(),
                           child: const Text(
-                            'أشعر بدخولك',
+                            'سجّل دخولك',
                             style: TextStyle(
                               color: Colors.white70,
                             ),
@@ -133,16 +133,14 @@ class _SignInState extends State<SignIn> {
                   const SizedBox(
                     height: 20,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.g_mobiledata, size: 40, color: Colors.deepOrange[400],),
-                      TextButton(
-                          onPressed: () {
-                            _authService.signInWithGoogle();
-                          },
-                          child: const Text('ادخل بحساب جوجل', style: TextStyle(fontSize: 18),)),
-                    ],
+                  Align(
+                    child: TextButton.icon(
+                        onPressed: () {
+                          _authService.signInWithGoogle();
+                        },
+                        label: const Text('ادخل بحساب جوجل', style: TextStyle(fontSize: 18),),
+                        icon: CircleAvatar(backgroundColor: Colors.white, child: Icon(Icons.g_mobiledata, size: 40, color: Colors.deepOrange[400],)),
+                      ),
                   )
                 ],
               ),
