@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:iftar/main.dart';
 import 'package:iftar/services/database.dart';
 import 'package:iftar/user.dart';
 
@@ -146,6 +148,7 @@ class AuthService {
 
   /// Delete User account from fbauth and his data from fbfirestore
   void deleteUserAccount() async {
+
     // Delete data from firestore
     try {
       String uid = _firebaseAuth.currentUser!.uid;
@@ -158,12 +161,30 @@ class AuthService {
     }
 
     // Delete user auth from firebase auth:
-
     try {
     await _firebaseAuth.currentUser!.delete();
     } on FirebaseException catch (e) {
       print('Cannot delete.');
+      // throw FirebaseException(
+      //     plugin: e.plugin, code: e.code, message: e.message);
+      showDialog(
+        context: mykeyNavigator.currentContext!, // With key the context of the dialog from where I call deleteUserAccount() is not needed.
+        builder: (context) => const AlertDialog(
+          icon: Icon(
+            Icons.warning_amber_rounded,
+            size: 70,
+            color: Colors.red,
+          ),
+          content: Text(
+            'لم يتسنّ حذف الحساب، أعد تسجيل الدخول ثم حاول مرة أخرى.',
+            textDirection: TextDirection.rtl,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 20),
+          ),
+        ),
+      );
     }
+
   }
 
 }

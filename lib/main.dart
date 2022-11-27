@@ -13,6 +13,8 @@ void main() async {
   runApp(const MyApp());
 }
 
+final mykeyNavigator = GlobalKey<NavigatorState>();
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -23,6 +25,7 @@ class MyApp extends StatelessWidget {
       value: AuthService().user,
       initialData: null,
       child: MaterialApp(
+          navigatorKey: mykeyNavigator, 
           routes: {
             '/': (context) => const Wrapper(),
             'reports_screen': (context) => const ReportScreen()
