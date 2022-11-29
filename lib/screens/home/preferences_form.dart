@@ -65,8 +65,7 @@ class _PreferencesFormState extends State<PreferencesForm> {
                           ),
                           // A dropdown for setting food
                           DropdownButtonFormField(
-                            alignment: AlignmentDirectional.centerEnd,
-                            isExpanded: true,
+                            alignment: AlignmentDirectional.center,
                             value: newFood ?? userData.food,
                             items: food.map((e) {
                               return DropdownMenuItem(

@@ -46,8 +46,11 @@ class _HomeState extends State<Home> {
           // backgroundColor: Colors.blue,
           shape: const StadiumBorder(),
           toolbarHeight: 77,
-          leading: const SizedBox(width: 5),
-          leadingWidth: 20,
+          leading: Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: IconButton(onPressed: () => keyToOpenEndDrawer.currentState!.openDrawer(), icon: const Icon(Icons.menu, size: 26,)),
+          ),
+          // leadingWidth: 20,
           elevation: 7,
           title: Text.rich(
             TextSpan(
@@ -60,21 +63,17 @@ class _HomeState extends State<Home> {
                       text: '\n${user!.email}\n',
                       style: const TextStyle(fontSize: 10))
                 ]),
-            textDirection: TextDirection.rtl,
+            // textDirection: TextDirection.rtl,
             textAlign: TextAlign.center,
           ),
           actions: [
             Padding(
-              padding: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.only(bottom: 10, left: 10),
               child: IconButton(onPressed: () => _authService.signOut(), icon: const Icon(Icons.logout, size: 26,)),
             ),
-            Padding(
-              padding: const EdgeInsets.only(right: 20, bottom: 10),
-              child: IconButton(onPressed: () => keyToOpenEndDrawer.currentState!.openEndDrawer(), icon: const Icon(Icons.menu, size: 26,)),
-            )
           ],
         ),
-        endDrawer: Directionality(textDirection: TextDirection.rtl ,child: SideNavDrawer(iuser: user)),
+        drawer: Directionality(textDirection: TextDirection.rtl ,child: SideNavDrawer(iuser: user)),
         extendBodyBehindAppBar: true,
         body: Container(
           decoration: const BoxDecoration(
@@ -82,8 +81,11 @@ class _HomeState extends State<Home> {
                   image: AssetImage('assets/logo.jpg'),
                   fit: BoxFit.contain,
                   opacity: 0.5)),
-          child: DataList(
-            sortCriteria: currentCriteria,
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: DataList(
+              sortCriteria: currentCriteria,
+            ),
           ),
         ),
         floatingActionButton: SpeedDial(

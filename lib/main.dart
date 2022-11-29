@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:iftar/reports/reports.dart';
 import 'package:iftar/screens/wrapper.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,7 +14,7 @@ void main() async {
   runApp(const MyApp());
 }
 
-final mykeyNavigator = GlobalKey<NavigatorState>();
+final mykeyNavigator = GlobalKey<NavigatorState>(); //Allows showing dialogs when the parent context is not found
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -26,6 +27,12 @@ class MyApp extends StatelessWidget {
       initialData: null,
       child: MaterialApp(
           navigatorKey: mykeyNavigator, 
+          localizationsDelegates: GlobalMaterialLocalizations.delegates,
+          supportedLocales: const [
+            Locale('ar'),
+            Locale('en')
+          ],
+          locale: const Locale('en'),
           routes: {
             '/': (context) => const Wrapper(),
             'reports_screen': (context) => const ReportScreen()

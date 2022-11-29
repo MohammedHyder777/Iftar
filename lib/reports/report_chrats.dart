@@ -19,6 +19,7 @@ class BarChart extends StatelessWidget {
         primaryXAxis: CategoryAxis(labelRotation: -20), // In degrees
         primaryYAxis: NumericAxis(title: AxisTitle(text: yAxisTitleText),),
         tooltipBehavior: TooltipBehavior(enable: true, duration: 1),
+        zoomPanBehavior: ZoomPanBehavior(enablePinching: true, enableSelectionZooming: true, enablePanning: true),
         series: <BarSeries<ChartData, String>>[
           // Renders bar chart
           BarSeries<ChartData, String>(

@@ -5,12 +5,22 @@ import 'package:iftar/screens/home/sidenav_drawer.dart';
 import 'package:iftar/user.dart';
 import 'package:provider/provider.dart';
 
+String shortenName(String name, int maxLength) {
+  List words = name.split(' ');
+  String shortName = '';
+  for (var word in words) {
+    // ignore: prefer_interpolation_to_compose_strings
+    shortName += (shortName+' '+word).length <= maxLength? ' $word' : '';
+  }
+  return shortName;
+}
+//*/////////////////////////////////////////////////////////////////////////////
 class DataTile extends StatelessWidget {
   final Data data;
   final bool isThisUser;
   const DataTile({Key? key, required this.data, required this.isThisUser})
       : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -28,23 +38,23 @@ class DataTile extends StatelessWidget {
               bottomLeft: Radius.circular(60),
             )),
         child: ListTile(
-          horizontalTitleGap: 50,
-          leading: CircleAvatar(
-              backgroundColor: Colors.white,
-              child: Icon(
-                Icons.dining,
-                color: Colors.red[data.strength],
-              )),
-          title: Text(data.name, style: const TextStyle(color: Colors.white)),
-          subtitle:
-              Text(data.food, style: const TextStyle(color: Colors.white)),
-          trailing: !isThisUser
-              ? null
-              : Padding(
-                padding: const EdgeInsets.only(right: 15),
-                child: CurrentUserButtons(iuser: Provider.of<IUser>(context)),
-              )
-        ),
+            horizontalTitleGap: 50,
+            leading: CircleAvatar(
+                backgroundColor: Colors.white,
+                child: Icon(
+                  Icons.dining,
+                  color: Colors.red[data.strength],
+                )),
+            title: Text(shortenName(data.name, 13), style: const TextStyle(color: Colors.white)),
+            subtitle:
+                Text(data.food, style: const TextStyle(color: Colors.white)),
+            trailing: !isThisUser
+                ? null
+                : Padding(
+                    padding: const EdgeInsets.only(right: 15),
+                    child:
+                        CurrentUserButtons(iuser: Provider.of<IUser>(context)),
+                  )),
       ),
     );
   }
@@ -56,7 +66,6 @@ class CurrentUserButtons extends StatelessWidget {
   final IUser iuser;
   @override
   Widget build(BuildContext context) {
-    
     return SpeedDial(
       elevation: 0,
       backgroundColor: Colors.indigo[100],
@@ -67,15 +76,24 @@ class CurrentUserButtons extends StatelessWidget {
       childrenButtonSize: const Size(45.0, 45.0),
       direction: SpeedDialDirection.left,
       closeDialOnPop: true,
-      overlayOpacity: 0.2, // = no overlay. This is better than renderOverlay = false which make exceptions and bad UX.
+      overlayOpacity:
+          0.2, // = no overlay. This is better than renderOverlay = false which make exceptions and bad UX.
       children: [
         SpeedDialChild(
-          child: const Icon(Icons.tune, size: 20, color: Colors.indigo,),
-          onTap: () => showPreferences(context),
+          child: const Icon(
+            Icons.delete,
+            size: 20,
+            color: Colors.red,
+          ),
+          onTap: () => viewDeleteOrderConfirm(context, iuser),
         ),
         SpeedDialChild(
-          child: const Icon(Icons.delete, size: 20, color: Colors.red,),
-          onTap: () => viewDeleteOrderConfirm(context, iuser),
+          child: const Icon(
+            Icons.tune,
+            size: 20,
+            color: Colors.indigo,
+          ),
+          onTap: () => showPreferences(context),
         ),
       ],
     );

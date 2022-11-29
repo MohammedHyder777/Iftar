@@ -12,11 +12,18 @@ class DdButtonWithLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Locale appLocale = Localizations.localeOf(context);
+    
+    
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
+        SizedBox( //The SizedBox is to align all the labels of different rows together.
+          width: 150,
+          child: Text(labelText, textDirection: TextDirection.rtl, style: const TextStyle(fontSize: 16),),
+        ),
         Container(
-          padding: const EdgeInsets.only(left: 8),
+          padding: appLocale.languageCode == 'ar'? const EdgeInsets.only(right: 8) : const EdgeInsets.only(left: 8),
           width: 150,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
@@ -31,16 +38,11 @@ class DdButtonWithLabel extends StatelessWidget {
             borderRadius: BorderRadius.circular(15),
             underline: Container(),
             dropdownColor: Colors.indigo[200],
-            isExpanded:
-                true, // Fixed width can be acheived by putting the button in a fixed width container and setting this to true.
+            isExpanded: true, // Fixed width can be acheived by putting the button in a fixed width container and setting this to true.
             value: value,
             items: items,
             onChanged: onChanged,
           ),
-        ),
-        SizedBox( //The SizedBox is to align all the labels of different rows together.
-          width: 150,
-          child: Text(labelText, textDirection: TextDirection.rtl, style: const TextStyle(fontSize: 16),),
         )
       ],
     );

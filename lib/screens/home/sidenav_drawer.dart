@@ -168,17 +168,6 @@ void viewDeleteOrderConfirm(BuildContext context, IUser user) {
         actionsAlignment: MainAxisAlignment.spaceEvenly,
         actions: [
           ElevatedButton.icon(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.close),
-            label: const Text('تراجع'),
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.indigo),
-              foregroundColor: MaterialStateProperty.all(Colors.white),
-              padding: MaterialStateProperty.all(
-                  const EdgeInsets.symmetric(horizontal: 11, vertical: 8)),
-            ),
-          ),
-          ElevatedButton.icon(
             onPressed: () {
               try {
                 DatabaseService().deleteOrder(user.uid);
@@ -192,6 +181,17 @@ void viewDeleteOrderConfirm(BuildContext context, IUser user) {
             label: const Text('تأكيد'),
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(Colors.red),
+              foregroundColor: MaterialStateProperty.all(Colors.white),
+              padding: MaterialStateProperty.all(
+                  const EdgeInsets.symmetric(horizontal: 11, vertical: 8)),
+            ),
+          ),
+          ElevatedButton.icon(
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.close),
+            label: const Text('تراجع'),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.indigo),
               foregroundColor: MaterialStateProperty.all(Colors.white),
               padding: MaterialStateProperty.all(
                   const EdgeInsets.symmetric(horizontal: 11, vertical: 8)),
@@ -222,17 +222,6 @@ void viewDeleteConfirm(BuildContext context) {
         actionsAlignment: MainAxisAlignment.spaceEvenly,
         actions: [
           ElevatedButton.icon(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.close),
-            label: const Text('إلغاء'),
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.indigo),
-              foregroundColor: MaterialStateProperty.all(Colors.white),
-              padding: MaterialStateProperty.all(
-                  const EdgeInsets.symmetric(horizontal: 11, vertical: 8)),
-            ),
-          ),
-          ElevatedButton.icon(
             onPressed: () {
               AuthService().deleteUserAccount();
               // _authService.signOut();  // After account deletion the user will be auto logged out.
@@ -242,6 +231,17 @@ void viewDeleteConfirm(BuildContext context) {
             label: const Text('تأكيد'),
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(Colors.red),
+              foregroundColor: MaterialStateProperty.all(Colors.white),
+              padding: MaterialStateProperty.all(
+                  const EdgeInsets.symmetric(horizontal: 11, vertical: 8)),
+            ),
+          ),
+          ElevatedButton.icon(
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.close),
+            label: const Text('إلغاء'),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.indigo),
               foregroundColor: MaterialStateProperty.all(Colors.white),
               padding: MaterialStateProperty.all(
                   const EdgeInsets.symmetric(horizontal: 11, vertical: 8)),
