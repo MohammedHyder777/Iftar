@@ -57,8 +57,8 @@ class _SignInState extends State<SignIn> {
                     height: 20,
                   ),
                   TextFormField(
-                    decoration: fieldDecor(
-                        label: 'البريد الإلكتروني', hint: 'example@dom.com'),
+                    decoration: fieldDecor(label: 'البريد الإلكتروني', hint: 'example@dom.com'),
+                    textDirection: TextDirection.ltr,
                     validator: (value) => value!.isEmpty ? 'أدخل بريدا' : null,
                     onChanged: (value) {
                       setState(() {
@@ -71,6 +71,7 @@ class _SignInState extends State<SignIn> {
                   ),
                   TextFormField(
                     decoration: fieldDecor(label: 'كلمة المرور'),
+                    textDirection: TextDirection.ltr,
                     obscureText: true,
                     onChanged: (value) {
                       setState(() {

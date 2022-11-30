@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iftar/data.dart';
-import 'package:iftar/reports/label_ddb.dart';
-import 'package:iftar/reports/report_chrats.dart';
+import 'package:iftar/screens/reports/label_ddb.dart';
+import 'package:iftar/screens/reports/report_chrats.dart';
 import 'package:iftar/services/database.dart';
 import 'package:provider/provider.dart';
 

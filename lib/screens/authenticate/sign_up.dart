@@ -56,6 +56,7 @@ class _SignUpState extends State<SignUp> {
                 const SizedBox(height: 20,),
                 TextFormField(
                   decoration: fieldDecor(label: 'البريد الإلكتروني', hint: 'example@dom.com'),
+                  textDirection: TextDirection.ltr,
                   validator: (value) => value!.isEmpty ? 'أدخل بريدا' : null,
                   onChanged: (value) {
                     setState(() {
@@ -66,6 +67,7 @@ class _SignUpState extends State<SignUp> {
                 const SizedBox(height: 20,),
                 TextFormField(
                   decoration: fieldDecor(label: 'كلمة المرور'),
+                  textDirection: TextDirection.ltr,
                   obscureText: true,
                   validator: (value) => value!.length < 4 ? 'لا تقبل كلمة سر أقصر من 4 أحرف' : null,
                   onChanged: (value) {

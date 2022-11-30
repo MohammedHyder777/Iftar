@@ -114,6 +114,12 @@ class SideNavDrawer extends StatelessWidget {
                     fontWeight: FontWeight.bold)),
             children: [
               ListTile(
+                leading: Icon(Icons.settings, color: Colors.indigo[800]),
+                title: Text('اضبط الإعدادت',
+                    style: TextStyle(color: Colors.indigo[800])),
+                onTap: () => Navigator.pushNamed(context, 'settings_screen'),
+              ),
+              ListTile(
                 leading: Icon(Icons.delete_forever, color: Colors.red[800]),
                 title: Text('احذف الحساب',
                     style: TextStyle(color: Colors.indigo[800])),

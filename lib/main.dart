@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:iftar/reports/reports.dart';
+import 'package:iftar/screens/reports/reports.dart';
+import 'package:iftar/screens/settings_screen.dart';
 import 'package:iftar/screens/wrapper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:iftar/services/auth.dart';
 import 'package:provider/provider.dart';
 import 'user.dart';
+
 void main() async {
   print('Before fb initialize');
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,26 +18,41 @@ void main() async {
 
 final mykeyNavigator = GlobalKey<NavigatorState>(); //Allows showing dialogs when the parent context is not found
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  static void setLocale(BuildContext context, Locale newLocale) async {
+    _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
+    state!.changeLanguage(newLocale);
+  }
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Locale? mylocale;
+
+  void changeLanguage(Locale locale) {
+    setState(() {
+      mylocale = locale;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamProvider<IUser?>.value(
-      value: AuthService().user,
-      initialData: null,
-      child: MaterialApp(
-          navigatorKey: mykeyNavigator, 
+        value: AuthService().user,
+        initialData: null,
+        child: MaterialApp(
+          navigatorKey: mykeyNavigator,
           localizationsDelegates: GlobalMaterialLocalizations.delegates,
-          supportedLocales: const [
-            Locale('ar'),
-            Locale('en')
-          ],
-          locale: const Locale('en'),
+          supportedLocales: const [Locale('ar'), Locale('en')],
+          locale: mylocale,
           routes: {
             '/': (context) => const Wrapper(),
-            'reports_screen': (context) => const ReportScreen()
+            'reports_screen': (context) => const ReportScreen(),
+            'settings_screen':(context) => const SettingsScreen(),
           },
           theme: ThemeData(
               primarySwatch: Colors.indigo,
